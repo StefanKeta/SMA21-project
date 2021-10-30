@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <dimen name="login_screen_padding">32dp</dimen>
+    <dimen name="login_form_fields_margin_between">6dp</dimen>
+    <dimen name="text_size_titles">24sp</dimen>
+    <dimen name="text_size_paragraph">14sp</dimen>
+    <dimen name="text_size_list_item">14sp</dimen>
+    <dimen name="text_size_list_item_important">16sp</dimen>
+    <dimen name="text_size_button">14sp</dimen>
+    <dimen name="text_size_input">16sp</dimen>
+</resources>
