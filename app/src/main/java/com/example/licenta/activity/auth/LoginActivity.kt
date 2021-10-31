@@ -6,14 +6,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.licenta.R
+import com.example.licenta.util.Util
 
 class LoginActivity : AppCompatActivity() , View.OnClickListener{
     private lateinit var emailET: EditText
     private lateinit var passwordET: EditText
     private lateinit var loginBtn: Button
     private lateinit var signUpBtn: Button
+    private lateinit var rootLayout : LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -22,6 +25,8 @@ class LoginActivity : AppCompatActivity() , View.OnClickListener{
 
     private fun initComponents(){
         supportActionBar?.hide()
+        rootLayout = findViewById(R.id.activity_login_parent_linear_layout)
+        rootLayout.setOnClickListener(this)
         emailET = findViewById(R.id.activity_login_email_et)
         passwordET = findViewById(R.id.activity_login_password_et)
         loginBtn = findViewById(R.id.activity_login_login_btn)
@@ -36,6 +41,7 @@ class LoginActivity : AppCompatActivity() , View.OnClickListener{
                 .show()
             R.id.activity_login_sign_up_btn -> startActivity(Intent(this@LoginActivity,
                 RegisterActivity::class.java))
+            R.id.activity_login_parent_linear_layout -> Util.hideKeyboard(this@LoginActivity)
         }
     }
 }
