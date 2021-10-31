@@ -45,17 +45,55 @@ class LoadingActivity : AppCompatActivity() {
         })
     }
 
-    private fun goToLogin(){
+    private fun goToLogin(duration:Long = 3000){
         Handler().postDelayed({
             startActivity(Intent(this,LoginActivity :: class.java))
-            finish()
-        },4000)
+        },duration)
     }
 
     private fun showError(){
         loadingBar.visibility = View.GONE
         Toast.makeText(this,"No internet connection!",Toast.LENGTH_LONG)
             .show()
+    }
+
+    val TAG = "ACTIVITIES LOADING"
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        goToLogin(1000)
+        Log.d(TAG, "onRestart: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Log.d(TAG, "onBackPressed: ")
+        finish()
     }
 
 

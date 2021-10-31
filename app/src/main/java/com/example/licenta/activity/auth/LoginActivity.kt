@@ -3,6 +3,7 @@ package com.example.licenta.activity.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -44,4 +45,14 @@ class LoginActivity : AppCompatActivity() , View.OnClickListener{
             R.id.activity_login_parent_linear_layout -> Util.hideKeyboard(this@LoginActivity)
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val a = Intent(Intent.ACTION_MAIN)
+        a.addCategory(Intent.CATEGORY_HOME)
+        a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(a)
+    }
+
+
 }
