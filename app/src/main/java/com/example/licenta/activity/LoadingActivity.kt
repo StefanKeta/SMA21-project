@@ -2,11 +2,11 @@ package com.example.licenta.activity
 
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -23,17 +23,18 @@ class LoadingActivity : AppCompatActivity() {
         checkConnection()
     }
 
-    private fun checkConnection() : Boolean{
+    private fun checkConnection() {
         val connectivityManager = this.getSystemService(CONNECTIVITY_SERVICE)
             as ConnectivityManager
         val networkInfo : Array<NetworkInfo> = connectivityManager.allNetworkInfo
+        Log.d("networkInfo", "checkConnection: ${networkInfo[0]}")
         for (info in networkInfo)
             if(info.state == NetworkInfo.State.CONNECTED) {
+                loadingBar.visibility = View.VISIBLE
                 trackInternetConnection()
-                return true
+                return
             }
         showError()
-        return false
     }
 
     private fun trackInternetConnection(){
@@ -47,11 +48,15 @@ class LoadingActivity : AppCompatActivity() {
     private fun goToLogin(){
         Handler().postDelayed({
             startActivity(Intent(this,LoginActivity :: class.java))
-        },4000)}
+            finish()
+        },4000)
+    }
 
     private fun showError(){
         loadingBar.visibility = View.GONE
         Toast.makeText(this,"No internet connection!",Toast.LENGTH_LONG)
             .show()
     }
+
+
 }
