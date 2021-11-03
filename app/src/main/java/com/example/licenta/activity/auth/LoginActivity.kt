@@ -46,6 +46,11 @@ class LoginActivity : AppCompatActivity() , View.OnClickListener{
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        finish()
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(Intent.ACTION_MAIN)

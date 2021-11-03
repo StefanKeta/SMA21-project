@@ -16,6 +16,7 @@ import com.example.licenta.util.InternetConnectionTracker
 
 class LoadingActivity : AppCompatActivity() {
     private lateinit var loadingBar : ProgressBar
+    private var isLaunched = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
@@ -40,7 +41,13 @@ class LoadingActivity : AppCompatActivity() {
     private fun trackInternetConnection(){
         InternetConnectionTracker.trackConnection(this)
         InternetConnectionTracker.observe(this@LoadingActivity,{ isConnected ->
-            if(isConnected) goToLogin()
+            if(isConnected) {
+                if(!isLaunched) {
+                    goToLogin()
+                    isLaunched = true
+                } else
+                    goToLogin(1000)
+            }
             else showError()
         })
     }
@@ -57,42 +64,9 @@ class LoadingActivity : AppCompatActivity() {
             .show()
     }
 
-    val TAG = "ACTIVITIES LOADING"
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart: ")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        goToLogin(1000)
-        Log.d(TAG, "onRestart: ")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume: ")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause: ")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: ")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy: ")
-    }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        Log.d(TAG, "onBackPressed: ")
         finish()
     }
 
