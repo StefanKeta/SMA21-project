@@ -102,30 +102,32 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun registerUser() {
-        if (
-            validateNames() &&
-            validateEmail() &&
-            validatePassword(passwordET) &&
-            validatePassword(confirmPasswordET) &&
-            arePasswordsEqual() &&
-            dobET.text.isNotEmpty() &&
-            isHeightValid() &&
-            isWeightValid()
-
-        )
+        if (!validateNames() ||
+            !validateEmail() ||
+            !validatePassword(passwordET) ||
+            !validatePassword(confirmPasswordET) ||
+            !arePasswordsEqual() ||
+            !dobET.text.isNotEmpty() ||
+            !isHeightValid() ||
+            !isWeightValid()
+        ) {
+            //do nothing
+        } else {
+            //register error
             startActivity(
                 Intent(
                     this@RegisterActivity,
                     LoginActivity::class.java
                 )
             )
+        }
     }
 
-    private fun validateNames() : Boolean{
-        if(firstNameET.text!!.isNotEmpty() && lastNameET.text!!.isNotEmpty()) {
+    private fun validateNames(): Boolean {
+        if (firstNameET.text!!.isNotEmpty() && lastNameET.text!!.isNotEmpty()) {
             return true
         }
-        return if(firstNameET.text!!.isEmpty()){
+        return if (firstNameET.text!!.isEmpty()) {
             firstNameLayout.error = getString(R.string.activity_register_error_required_field)
             false
         } else {
@@ -165,7 +167,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun isHeightValid(): Boolean {
         if (heightCmBtn.isSelected) {
-            val height = if (heightET.text.isNotEmpty())heightET.text.toString().toDouble() else 0
+            val height = if (heightET.text.isNotEmpty()) heightET.text.toString().toDouble() else 0
             return checkIfTooSmallOrTooTall(height.toDouble())
         } else {
             val heightList = heightET.text.split(".")
@@ -193,15 +195,17 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun isWeightValid(): Boolean {
-        if(weightKgBtn.isSelected){
-            if(weightET.text.isEmpty() || weightET.text.toString().toDouble() < Util.MINIMUM_WEIGHT_KG){
+        if (weightKgBtn.isSelected) {
+            if (weightET.text.isEmpty() || weightET.text.toString()
+                    .toDouble() < Util.MINIMUM_WEIGHT_KG
+            ) {
                 weightLayout.error = getString(R.string.activity_register_error_weight_invalid)
                 return false
             }
-        }else{
+        } else {
             val lbs = weightET.text.toString().toInt().or(0)
             val kg = Util.convertLbsToKg(lbs)
-            if (weightET.text.isEmpty() || weightET.text.contains(".") || kg > Util.MINIMUM_WEIGHT_KG){
+            if (weightET.text.isEmpty() || weightET.text.contains(".") || kg > Util.MINIMUM_WEIGHT_KG) {
                 weightLayout.error = getString(R.string.activity_register_error_weight_invalid)
                 return false
             }
