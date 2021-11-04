@@ -24,4 +24,11 @@
     <string name="activity_register_error_height_invalid">Invalid height entered</string>
     <string name="activity_register_error_weight_invalid">Invalid weight entered</string>
     <string name="activity_register_error_required_field">*Required</string>
+    <string name="menu_bottom_main_home">Home</string>
+    <string name="menu_main_bottom_search">Search</string>
+    <string name="menu_main_bottom_diary">Diary</string>
+    <string name="menu_main_bottom_profile">Profile</string>
+    <string name="activity_main_description_floating_action_button_add">Floating action button add</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
