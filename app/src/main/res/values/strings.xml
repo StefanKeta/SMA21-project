@@ -35,5 +35,5 @@
     <string name="menu_fragment_profile_info_posts">Posts</string>
     <string name="menu_fragment_profile_info_goals">Goals</string>
     <string name="menu_fragment_profile_info_records">Records</string>
-    <string name="menu_fragment_profile_info_followers">Followers</string>
+    <string name="menu_fragment_profile_info_followers">Connections</string>
 </resources>

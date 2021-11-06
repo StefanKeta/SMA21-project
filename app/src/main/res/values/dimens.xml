@@ -14,4 +14,5 @@
     <dimen name="activity_main_padding_bottom_fragments">50dp</dimen>
     <dimen name="fragment_profile_padding">16dp</dimen>
     <dimen name="fragment_profile_image_profile_size">96dp</dimen>
+    <dimen name="fab_animation_margin_start_end">100dp</dimen>
 </resources>
