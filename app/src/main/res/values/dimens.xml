@@ -12,4 +12,6 @@
     <dimen name="scroll_view_padding">6dp</dimen>
     <dimen name="activity_main_app_bar_bottom_fab_setup">10dp</dimen>
     <dimen name="activity_main_padding_bottom_fragments">50dp</dimen>
+    <dimen name="fragment_profile_padding">16dp</dimen>
+    <dimen name="fragment_profile_image_profile_size">96dp</dimen>
 </resources>
