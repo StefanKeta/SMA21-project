@@ -36,4 +36,12 @@
     <string name="menu_fragment_profile_info_goals">Goals</string>
     <string name="menu_fragment_profile_info_records">Records</string>
     <string name="menu_fragment_profile_info_followers">Connections</string>
+    <string name="fragment_diary_calendar_before_btn">Previous day</string>
+    <string name="fragment_diary_food_tab_btn">Food</string>
+    <string name="fragment_diary_exercise_tab_btn">Exercise</string>
+    <string name="fragment_diary_food_protein_tv">Protein</string>
+    <string name="fragment_diary_food_carbs_tv">Carbs</string>
+    <string name="fragment_diary_food_fat_tv">Fat</string>
+    <string name="fragment_food_calories_remaining_tv">Calories remaining:</string>
+    <string name="fragment_profile_add_food_btn">Add food</string>
 </resources>

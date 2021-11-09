@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="app_horizontal_padding_standard">24dp</dimen>
+    <dimen name="app_vertical_padding_standard">16dp</dimen>
     <dimen name="login_screen_padding">32dp</dimen>
     <dimen name="login_form_fields_margin_between">16dp</dimen>
     <dimen name="text_size_titles">24sp</dimen>
