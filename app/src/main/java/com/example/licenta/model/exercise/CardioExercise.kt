@@ -1,4 +1,4 @@
-package com.example.licenta.model
+package com.example.licenta.model.exercise
 
 data class CardioExercise(
     override val name: String,

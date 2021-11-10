@@ -46,4 +46,6 @@
     <string name="fragment_profile_add_food_btn">Add food</string>
     <string name="fragment_diary_exercise_add_exercise_btn">Add exercise</string>
     <string name="activity_exercise_search_for_exercises_et">Search for exercises</string>
+    <string name="activity_food_search_for_food_til">Search for food</string>
+    <string name="activity_add_food_scan_barcode_tv">Scan barcode</string>
 </resources>

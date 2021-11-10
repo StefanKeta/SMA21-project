@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.diary.AddMealActivity"
+    android:paddingVertical="@dimen/app_vertical_padding_standard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/scroll_view_padding"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activity_food_search_for_food_til"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            app:boxBackgroundColor="@android:color/white"
+            android:layout_height="wrap_content"
+            app:startIconDrawable= "@drawable/ic_baseline_search_24"
+            android:hint="@string/activity_food_search_for_food_til">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_food_search_for_food_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/activity_add_food_barcode_icon_size"
+            android:layout_weight="1"
+            android:src="@drawable/barcode"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/activity_food_scan_food_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/activity_add_food_scan_barcode_tv"
+        android:padding="@dimen/scroll_view_padding"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activity_add_food_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>
