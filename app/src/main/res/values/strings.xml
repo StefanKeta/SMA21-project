@@ -44,4 +44,6 @@
     <string name="fragment_diary_food_fat_tv">Fat</string>
     <string name="fragment_food_calories_remaining_tv">Calories remaining:</string>
     <string name="fragment_profile_add_food_btn">Add food</string>
+    <string name="fragment_diary_exercise_add_exercise_btn">Add exercise</string>
+    <string name="activity_exercise_search_for_exercises_et">Search for exercises</string>
 </resources>

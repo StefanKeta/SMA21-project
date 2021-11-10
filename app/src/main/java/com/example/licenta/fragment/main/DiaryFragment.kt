@@ -1,6 +1,7 @@
 package com.example.licenta.fragment.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,11 +22,11 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DiaryFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DiaryFragment : Fragment() {
+class DiaryFragment(val selectedFragment: String = FOOD_FRAGMENT_CODE) : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var tabLayout : TabLayout
-    private lateinit var fragmentLayout : FrameLayout
+    private lateinit var tabLayout: TabLayout
+    private lateinit var fragmentLayout: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +45,18 @@ class DiaryFragment : Fragment() {
         return view
     }
 
-    private fun initComponents(view : View){
+    private fun initComponents(view: View) {
         tabLayout = view.findViewById(R.id.fragment_diary_tab_layout)
         fragmentLayout = view.findViewById(R.id.fragment_diary_fragment_frame_layout)
         switchFragment(FoodFragment())
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        if (selectedFragment == EXERCISE_FRAGMENT_CODE) {
+            tabLayout.getTabAt(1)!!.select()
+            switchFragment(ExerciseFragment())
+        } else {
+            tabLayout.getTabAt(0)!!.select()
+            switchFragment(FoodFragment())
+        }
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab!!.position == 0) switchFragment(FoodFragment())
                 else switchFragment(ExerciseFragment())
@@ -67,23 +75,17 @@ class DiaryFragment : Fragment() {
         })
     }
 
-    private fun switchFragment(fragment : Fragment){
+    private fun switchFragment(fragment: Fragment) {
         val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_diary_fragment_frame_layout,fragment)
+        fragmentTransaction.replace(R.id.fragment_diary_fragment_frame_layout, fragment)
         fragmentTransaction.commit()
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FoodFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+        const val FOOD_FRAGMENT_CODE: String = "FoodFragment"
+        const val EXERCISE_FRAGMENT_CODE: String = "ExerciseFragment"
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             FoodFragment().apply {

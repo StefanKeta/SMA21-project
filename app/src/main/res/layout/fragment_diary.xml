@@ -9,46 +9,6 @@
 
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:gravity="center"
-        android:paddingVertical="@dimen/app_vertical_padding_standard"
-        android:paddingHorizontal="@dimen/app_horizontal_padding_standard"
-        >
-
-        <ImageView
-            android:id="@+id/fragment_diary_back_navigation_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:src="@drawable/ic_baseline_navigate_before_24"
-            android:contentDescription="@string/fragment_diary_calendar_before_btn" />
-
-
-        <TextView
-            android:id="@+id/fragment_diary_pick_date_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="2"
-            tools:text = "11/04/1999"
-            />
-
-
-        <ImageView
-            android:id="@+id/fragment_diary_next_navigation_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:src="@drawable/ic_baseline_navigate_next_24"
-            android:contentDescription="@string/fragment_diary_calendar_before_btn" />
-    </LinearLayout>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -83,9 +43,48 @@
                 </com.google.android.material.tabs.TabLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                android:gravity="center"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:paddingVertical="@dimen/app_vertical_padding_standard"
+                android:paddingHorizontal="@dimen/app_horizontal_padding_standard"
+                >
+
+                <ImageView
+                    android:id="@+id/fragment_diary_back_navigation_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_baseline_navigate_before_24"
+                    android:contentDescription="@string/fragment_diary_calendar_before_btn" />
+
+
+                <TextView
+                    android:id="@+id/fragment_diary_pick_date_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="2"
+                    tools:text = "11/04/1999"
+                    />
+
+
+                <ImageView
+                    android:id="@+id/fragment_diary_next_navigation_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_baseline_navigate_next_24"
+                    android:contentDescription="@string/fragment_diary_calendar_before_btn" />
+            </LinearLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
 
         <FrameLayout
