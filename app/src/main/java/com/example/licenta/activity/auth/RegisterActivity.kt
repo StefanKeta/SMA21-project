@@ -1,17 +1,22 @@
 package com.example.licenta.activity.auth
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.licenta.R
+import com.example.licenta.firebase.Auth
+import com.example.licenta.firebase.db.UsersDB
+import com.example.licenta.model.user.User
 import com.example.licenta.util.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.sql.Date
 
-class RegisterActivity : AppCompatActivity(), View.OnClickListener {
+class RegisterActivity : AppCompatActivity(), View.OnClickListener{
     private lateinit var parentLayout: LinearLayout
     private lateinit var scrollView: ScrollView
     private lateinit var firstNameLayout: TextInputLayout
@@ -59,6 +64,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         emailET = findViewById(R.id.activity_register_email_et)
         dobLayout = findViewById(R.id.activity_register_dob_layout)
         dobET = findViewById(R.id.activity_register_dob_et)
+        dobET.setOnClickListener(this)
         passwordLayout = findViewById(R.id.activity_register_password_layout)
         passwordET = findViewById(R.id.activity_register_password_et)
         confirmPasswordLayout = findViewById(R.id.activity_register_confirm_password_layout)
@@ -67,15 +73,76 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         heightET = findViewById(R.id.activity_register_height_et)
         heightGroup = findViewById(R.id.activity_register_height_tbg)
         heightCmBtn = findViewById(R.id.activity_register_cm_btn)
+        heightCmBtn.setOnClickListener(this)
         heightFeetBtn = findViewById(R.id.activity_register_feet_btn)
+        heightFeetBtn.setOnClickListener(this)
         weightLayout = findViewById(R.id.activity_register_weight_layout)
         weightET = findViewById(R.id.activity_register_weight_et)
         weightGroup = findViewById(R.id.activity_register_weight_tbg)
         weightKgBtn = findViewById(R.id.activity_register_kg_btn)
+        weightKgBtn.setOnClickListener(this)
         weightLbsBtn = findViewById(R.id.activity_register_lbs_btn)
+        weightLbsBtn.setOnClickListener(this)
         signUpBtn = findViewById(R.id.activity_register_sign_up_btn)
         signUpBtn.setOnClickListener(this)
         setUpDropdown()
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.activity_register_parent_linear_layout -> Util.hideKeyboard(this)
+            R.id.activity_register_gender_dropdown -> Util.hideKeyboard(this)
+            R.id.activity_register_scroll_view -> Util.hideKeyboard(this)
+            R.id.activity_register_dob_et -> openDatePicker()
+            R.id.activity_register_cm_btn -> heightButtonClicked(R.id.activity_register_cm_btn)
+            R.id.activity_register_feet_btn -> heightButtonClicked(R.id.activity_register_feet_btn)
+            R.id.activity_register_kg_btn -> weightButtonClicked(R.id.activity_register_kg_btn)
+            R.id.activity_register_lbs_btn -> weightButtonClicked(R.id.activity_register_lbs_btn)
+            R.id.activity_register_sign_up_btn -> validateAndRegisterUser()
+        }
+    }
+
+    private fun heightButtonClicked(id:Int){
+        if(id == R.id.activity_register_cm_btn){
+            heightET.hint =
+                "${getString(R.string.activity_register_height_et)} (cm)"
+            if(heightET.text.isNotEmpty()){
+                val feetInches = heightET.text.split(".")
+                val height = if(feetInches.size == 1)
+                    Util.convertFeetInchesToCm(feetInches[0].toInt())
+                else
+                    Util.convertFeetInchesToCm(feetInches[0].toInt(),feetInches[1].toInt())
+                Log.d("heightET", "heightButtonClicked: $height")
+                heightET.setText(height.toString())
+            }
+        }else{
+            heightET.hint =
+                "${getString(R.string.activity_register_height_et)} (ft.inch)"
+            if(heightET.text.isNotEmpty()){
+                val pair = Util.convertCmToFeetInches(heightET.text.toString().toInt())
+                heightET.setText("${pair.first}.${pair.second}")
+            }
+        }
+    }
+
+    private fun weightButtonClicked(id:Int){
+        if(id == R.id.activity_register_kg_btn){
+            weightET.hint =
+                "${getString(R.string.activity_register_weight_et)} (kg)"
+            if(weightET.text.isNotEmpty()){
+                val lbs = weightET.text.toString().toInt()
+                val weight = Util.convertLbsToKg(lbs)
+                weightET.setText(weight.toString())
+            }
+        }else{
+            weightET.hint =
+                "${getString(R.string.activity_register_weight_et)} lbs"
+            if(weightET.text.isNotEmpty()){
+                val kg = weightET.text.toString().toDouble()
+                val lbs = Util.convertKgToLbs(kg)
+                weightET.setText(lbs.toString())
+            }
+        }
     }
 
     private fun setUpDropdown() {
@@ -88,40 +155,54 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.activity_register_parent_linear_layout -> Util.hideKeyboard(this)
-            R.id.activity_register_gender_dropdown -> Util.hideKeyboard(this)
-            R.id.activity_register_scroll_view -> Util.hideKeyboard(this)
-            R.id.activity_register_cm_btn -> heightET.hint =
-                "${getString(R.string.activity_register_height_et)} (cm)"
-            R.id.activity_register_feet_btn -> heightET.hint =
-                "${getString(R.string.activity_register_height_et)} (ft.inch)"
-            R.id.activity_register_sign_up_btn -> registerUser()
+
+    private fun openDatePicker(){
+        Util.hideKeyboard(this)
+        val datePicker = MaterialDatePicker
+            .Builder
+            .datePicker()
+            .setTitleText(getString(R.string.activity_register_dob_date_picker_title))
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .build()
+
+        datePicker
+            .show(supportFragmentManager,null)
+
+        datePicker.addOnPositiveButtonClickListener {
+            dobET.setText(Util.getDateFromTimestamp(datePicker.selection!!))
+            datePicker.dismiss()
+        }
+
+        datePicker.addOnNegativeButtonClickListener {
+            datePicker.dismiss()
         }
     }
 
-    private fun registerUser() {
-        if (!validateNames() ||
-            !validateEmail() ||
-            !validatePassword(passwordET) ||
-            !validatePassword(confirmPasswordET) ||
-            !arePasswordsEqual() ||
-            !dobET.text.isNotEmpty() ||
-            !isHeightValid() ||
-            !isWeightValid()
+    private fun validateAndRegisterUser() {
+        Util.hideKeyboard(this)
+        if (validateNames() &&
+            validateEmail() &&
+            validatePassword(passwordET) &&
+            validatePassword(confirmPasswordET) &&
+            arePasswordsEqual() &&
+            dobET.text.isNotEmpty() &&
+            isHeightValid() &&
+            isWeightValid()
         ) {
-            //do nothing
-        } else {
-            //register error
-            startActivity(
-                Intent(
-                    this@RegisterActivity,
-                    LoginActivity::class.java
-                )
+            val dobTimestamp = Util.getTimestampFromDate(dobET.text.toString())
+            val user = User(
+                firstNameET.text.toString().trim(),
+                lastNameET.text.toString().trim(),
+                dobTimestamp.time,
+                genderDropdown.text.toString().trim(),
+                heightET.text.toString().trim().toInt(),
+                weightET.text.toString().trim().toInt(),
             )
+            Auth.registerUser(this,user,emailET.text.toString().trim(),passwordET.text.toString().trim())
         }
     }
+
+
 
     private fun validateNames(): Boolean {
         if (firstNameET.text!!.isNotEmpty() && lastNameET.text!!.isNotEmpty()) {
@@ -160,15 +241,16 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun arePasswordsEqual(): Boolean {
-        val password = passwordET.text.toString()
-        val confirmedPassword = confirmPasswordET.text.toString()
+        val password = passwordET.text.toString().trim()
+        val confirmedPassword = confirmPasswordET.text.toString().trim()
         return password == confirmedPassword
     }
 
     private fun isHeightValid(): Boolean {
-        if (heightCmBtn.isSelected) {
-            val height = if (heightET.text.isNotEmpty()) heightET.text.toString().toDouble() else 0
-            return checkIfTooSmallOrTooTall(height.toDouble())
+        Log.d("getSelection", "isHeight ${heightCmBtn.isEnabled} ${heightCmBtn.isActivated} ${heightCmBtn.isPressed} ${weightLbsBtn.isActivated} ${weightLbsBtn.isEnabled} ${weightLbsBtn.isPressed}")
+        if (heightCmBtn.isEnabled) {
+            val height = if (heightET.text.isNotEmpty()) heightET.text.toString().toInt() else 0
+            return checkIfTooSmallOrTooTall(height)
         } else {
             val heightList = heightET.text.split(".")
             return if (heightList.size > 2 || heightList[0].toDouble() > 8 || (heightList.size == 2 && heightList[1].toDouble() > 11)) {
@@ -186,7 +268,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun checkIfTooSmallOrTooTall(height: Double): Boolean {
+    private fun checkIfTooSmallOrTooTall(height: Int): Boolean {
         if (height < Util.MINIMUM_HEIGHT_CM || height > Util.MAXIMUM_HEIGHT_CM) {
             heightLayout.error = getString(R.string.activity_register_error_height_invalid)
             return false
@@ -195,7 +277,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun isWeightValid(): Boolean {
-        if (weightKgBtn.isSelected) {
+        if (weightKgBtn.isEnabled) {
             if (weightET.text.isEmpty() || weightET.text.toString()
                     .toDouble() < Util.MINIMUM_WEIGHT_KG
             ) {

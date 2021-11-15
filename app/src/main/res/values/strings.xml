@@ -48,4 +48,7 @@
     <string name="activity_exercise_search_for_exercises_et">Search for exercises</string>
     <string name="activity_food_search_for_food_til">Search for food</string>
     <string name="activity_add_food_scan_barcode_tv">Scan barcode</string>
+    <string name="activity_register_dob_date_picker_title">Date of birth</string>
+    <string name="activity_register_dob_date_picker_tag">datePickerOpened</string>
+    <string name="register_activity_auth_exception_email_exists">The user with the specified email already exists</string>
 </resources>

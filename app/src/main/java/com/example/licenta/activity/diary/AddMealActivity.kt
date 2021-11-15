@@ -2,6 +2,7 @@ package com.example.licenta.activity.diary
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.licenta.R
 
 class AddMealActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
