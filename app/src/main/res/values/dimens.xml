@@ -18,4 +18,5 @@
     <dimen name="fragment_profile_image_profile_size">96dp</dimen>
     <dimen name="fab_animation_margin_start_end">100dp</dimen>
     <dimen name="activity_add_food_barcode_icon_size">55dp</dimen>
+    <dimen name="app_padding_small">8dp</dimen>
 </resources>

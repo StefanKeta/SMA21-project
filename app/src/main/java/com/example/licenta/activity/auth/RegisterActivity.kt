@@ -15,6 +15,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.sql.Date
+import java.util.*
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener{
     private lateinit var parentLayout: LinearLayout
@@ -190,15 +191,15 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener{
             isWeightValid()
         ) {
             val dobTimestamp = Util.getTimestampFromDate(dobET.text.toString())
-            val user = User(
+            Auth.registerUser(
+                this,
                 firstNameET.text.toString().trim(),
                 lastNameET.text.toString().trim(),
+                emailET.text.toString().trim(),
                 dobTimestamp.time,
                 genderDropdown.text.toString().trim(),
                 heightET.text.toString().trim().toInt(),
-                weightET.text.toString().trim().toInt(),
-            )
-            Auth.registerUser(this,user,emailET.text.toString().trim(),passwordET.text.toString().trim())
+                weightET.text.toString().trim().toInt(),passwordET.text.toString().trim())
         }
     }
 

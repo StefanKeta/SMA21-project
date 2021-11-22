@@ -3,7 +3,6 @@ package com.example.licenta.activity.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -11,8 +10,18 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.licenta.R
 import com.example.licenta.activity.MainActivity
+import com.example.licenta.activity.SetGoalsActivity
+import com.example.licenta.data.LoggedUserData
+import com.example.licenta.firebase.Auth
+import com.example.licenta.firebase.db.GoalsDB
+import com.example.licenta.firebase.db.UsersDB
+import com.example.licenta.model.user.Goals
+import com.example.licenta.model.user.User
 import com.example.licenta.util.Util
 import com.google.android.material.textfield.TextInputLayout
+import java.util.*
+import java.util.function.Supplier
+import kotlin.NoSuchElementException
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var emailLayout: TextInputLayout
@@ -44,7 +53,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.activity_login_login_btn -> attemptLogin()
+            R.id.activity_login_login_btn -> loginUser(
+                emailET.text.toString().trim(),
+                passwordET.text.toString().trim()
+            )
             R.id.activity_login_sign_up_btn -> startActivity(
                 Intent(
                     this@LoginActivity,
@@ -56,35 +68,40 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun attemptLogin(){
-        if(!validateEmail() || !validatePassword()){
-            Toast.makeText(this,"Invalid credentials",Toast.LENGTH_SHORT)
+    private fun loginUser(email: String, password: String) {
+        if (!validateEmail(email) || !validatePassword(password)) {
+            Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT)
                 .show()
-        }else{
-            //login user -> getUserData -> switch activity
-            startActivity(Intent(this,MainActivity :: class.java))
+        } else {
+            Auth.loginUser(email, password)
+                .addOnSuccessListener {
+                    UsersDB.getUser(Auth.currentUser().uid) {
+                        getUserCallback(it)
+                    }
+                }
+
         }
     }
 
-    private fun validateEmail():Boolean{
-        val email = emailET.text.toString()
-        return if(emailET.text.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+
+    private fun validateEmail(email: String): Boolean {
+        return if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches()
+        ) {
             emailLayout.error = getString(R.string.activity_register_invalid_email_error)
             false
-        }
-        //else if check if email exists in db
-        else{
+        } else {
             emailLayout.isErrorEnabled = false
             true
         }
     }
 
-    private fun validatePassword():Boolean {
-        val password = passwordET.text.toString()
-        return if(passwordET.text.isEmpty() || password.length < 8){
-            passwordLayout.error = getString(R.string.activity_register_error_password_invalid_length)
+    private fun validatePassword(password: String): Boolean {
+        return if (password.isEmpty() || password.length < 8) {
+            passwordLayout.error =
+                getString(R.string.activity_register_error_password_invalid_length)
             false
-        }else{
+        } else {
             passwordLayout.isErrorEnabled = false
             true
         }
@@ -104,6 +121,24 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
+    private fun getUserCallback(user: User?) {
+        if (user != null) {
+            LoggedUserData.setLoggedUser(user)
+            checkIfUserHasGoals()
+        } else {
+            Toast.makeText(this@LoginActivity, "Invalid credentials!", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
 
+    private fun checkIfUserHasGoals(){
+        GoalsDB.userHasGoals(LoggedUserData.getLoggedUser().uuid){
+            if(it){
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            }else{
+                startActivity(Intent(this@LoginActivity, SetGoalsActivity::class.java))
+            }
+        }
+    }
 
 }
