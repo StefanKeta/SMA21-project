@@ -15,7 +15,7 @@ import com.example.licenta.activity.auth.LoginActivity
 import com.example.licenta.util.InternetConnectionTracker
 
 class LoadingActivity : AppCompatActivity() {
-    private lateinit var loadingBar : ProgressBar
+    private lateinit var loadingBar: ProgressBar
     private var isLaunched = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +26,11 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun checkConnection() {
         val connectivityManager = this.getSystemService(CONNECTIVITY_SERVICE)
-            as ConnectivityManager
-        val networkInfo : Array<NetworkInfo> = connectivityManager.allNetworkInfo
+                as ConnectivityManager
+        val networkInfo: Array<NetworkInfo> = connectivityManager.allNetworkInfo
         Log.d("networkInfo", "checkConnection: ${networkInfo[0]}")
         for (info in networkInfo)
-            if(info.state == NetworkInfo.State.CONNECTED) {
+            if (info.state == NetworkInfo.State.CONNECTED) {
                 loadingBar.visibility = View.VISIBLE
                 trackInternetConnection()
                 return
@@ -38,29 +38,28 @@ class LoadingActivity : AppCompatActivity() {
         showError()
     }
 
-    private fun trackInternetConnection(){
+    private fun trackInternetConnection() {
         InternetConnectionTracker.trackConnection(this)
-        InternetConnectionTracker.observe(this@LoadingActivity,{ isConnected ->
-            if(isConnected) {
-                if(!isLaunched) {
+        InternetConnectionTracker.observe(this@LoadingActivity, { isConnected ->
+            if (isConnected) {
+                if (!isLaunched) {
                     goToLogin()
                     isLaunched = true
                 } else
                     goToLogin(1000)
-            }
-            else showError()
+            } else showError()
         })
     }
 
-    private fun goToLogin(duration:Long = 3000){
+    private fun goToLogin(duration: Long = 3000) {
         Handler().postDelayed({
-            startActivity(Intent(this,LoginActivity :: class.java))
-        },duration)
+            startActivity(Intent(this, LoginActivity::class.java))
+        }, duration)
     }
 
-    private fun showError(){
+    private fun showError() {
         loadingBar.visibility = View.GONE
-        Toast.makeText(this,"No internet connection!",Toast.LENGTH_LONG)
+        Toast.makeText(this, "No internet connection!", Toast.LENGTH_LONG)
             .show()
     }
 

@@ -24,23 +24,23 @@ object UsersDB {
                     Toast.LENGTH_SHORT
                 )
                     .show()
-                ctx.startActivity(Intent(ctx,LoginActivity::class.java))
+                ctx.startActivity(Intent(ctx, LoginActivity::class.java))
             }
             .addOnFailureListener {
-                Toast.makeText(ctx, it.toString(),Toast.LENGTH_SHORT)
+                Toast.makeText(ctx, it.toString(), Toast.LENGTH_SHORT)
                     .show()
             }
     }
 
-     fun getUser(id:String,callback:(User?)->Unit){
+    fun getUser(id: String, callback: (User?) -> Unit) {
         db.collection(CollectionsName.USERS)
             .whereEqualTo(User.USER_UUID, id)
             .get()
             .addOnCompleteListener {
-                if(it.isSuccessful){
-                    if(it.result!!.documents.size == 1)
+                if (it.isSuccessful) {
+                    if (it.result!!.documents.size == 1)
                         callback(it.result!!.documents[0].toObject(User::class.java))
-                }else
+                } else
                     callback(null)
             }
     }

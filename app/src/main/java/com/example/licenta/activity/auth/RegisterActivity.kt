@@ -8,6 +8,7 @@ import android.widget.*
 import com.example.licenta.R
 import com.example.licenta.firebase.Auth
 import com.example.licenta.firebase.db.UsersDB
+import com.example.licenta.model.user.Gender
 import com.example.licenta.model.user.User
 import com.example.licenta.util.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -17,7 +18,7 @@ import com.google.android.material.textfield.TextInputLayout
 import java.sql.Date
 import java.util.*
 
-class RegisterActivity : AppCompatActivity(), View.OnClickListener{
+class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var parentLayout: LinearLayout
     private lateinit var scrollView: ScrollView
     private lateinit var firstNameLayout: TextInputLayout
@@ -103,42 +104,42 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener{
         }
     }
 
-    private fun heightButtonClicked(id:Int){
-        if(id == R.id.activity_register_cm_btn){
+    private fun heightButtonClicked(id: Int) {
+        if (id == R.id.activity_register_cm_btn) {
             heightET.hint =
                 "${getString(R.string.activity_register_height_et)} (cm)"
-            if(heightET.text.isNotEmpty()){
+            if (heightET.text.isNotEmpty()) {
                 val feetInches = heightET.text.split(".")
-                val height = if(feetInches.size == 1)
+                val height = if (feetInches.size == 1)
                     Util.convertFeetInchesToCm(feetInches[0].toInt())
                 else
-                    Util.convertFeetInchesToCm(feetInches[0].toInt(),feetInches[1].toInt())
+                    Util.convertFeetInchesToCm(feetInches[0].toInt(), feetInches[1].toInt())
                 Log.d("heightET", "heightButtonClicked: $height")
                 heightET.setText(height.toString())
             }
-        }else{
+        } else {
             heightET.hint =
                 "${getString(R.string.activity_register_height_et)} (ft.inch)"
-            if(heightET.text.isNotEmpty()){
+            if (heightET.text.isNotEmpty()) {
                 val pair = Util.convertCmToFeetInches(heightET.text.toString().toInt())
                 heightET.setText("${pair.first}.${pair.second}")
             }
         }
     }
 
-    private fun weightButtonClicked(id:Int){
-        if(id == R.id.activity_register_kg_btn){
+    private fun weightButtonClicked(id: Int) {
+        if (id == R.id.activity_register_kg_btn) {
             weightET.hint =
                 "${getString(R.string.activity_register_weight_et)} (kg)"
-            if(weightET.text.isNotEmpty()){
+            if (weightET.text.isNotEmpty()) {
                 val lbs = weightET.text.toString().toInt()
                 val weight = Util.convertLbsToKg(lbs)
                 weightET.setText(weight.toString())
             }
-        }else{
+        } else {
             weightET.hint =
                 "${getString(R.string.activity_register_weight_et)} lbs"
-            if(weightET.text.isNotEmpty()){
+            if (weightET.text.isNotEmpty()) {
                 val kg = weightET.text.toString().toDouble()
                 val lbs = Util.convertKgToLbs(kg)
                 weightET.setText(lbs.toString())
@@ -157,7 +158,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener{
     }
 
 
-    private fun openDatePicker(){
+    private fun openDatePicker() {
         Util.hideKeyboard(this)
         val datePicker = MaterialDatePicker
             .Builder
@@ -167,7 +168,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener{
             .build()
 
         datePicker
-            .show(supportFragmentManager,null)
+            .show(supportFragmentManager, null)
 
         datePicker.addOnPositiveButtonClickListener {
             dobET.setText(Util.getDateFromTimestamp(datePicker.selection!!))
@@ -197,13 +198,19 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener{
                 lastNameET.text.toString().trim(),
                 emailET.text.toString().trim(),
                 dobTimestamp.time,
-                genderDropdown.text.toString().trim(),
+                getGender(),
                 heightET.text.toString().trim().toInt(),
-                weightET.text.toString().trim().toInt(),passwordET.text.toString().trim())
+                weightET.text.toString().trim().toInt(), passwordET.text.toString().trim()
+            )
         }
     }
 
-
+    private fun getGender(): Gender {
+        return when(genderDropdown.text.toString().lowercase()){
+            "m" -> Gender.MALE
+            else -> Gender.FEMALE
+        }
+    }
 
     private fun validateNames(): Boolean {
         if (firstNameET.text!!.isNotEmpty() && lastNameET.text!!.isNotEmpty()) {
@@ -248,7 +255,10 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener{
     }
 
     private fun isHeightValid(): Boolean {
-        Log.d("getSelection", "isHeight ${heightCmBtn.isEnabled} ${heightCmBtn.isActivated} ${heightCmBtn.isPressed} ${weightLbsBtn.isActivated} ${weightLbsBtn.isEnabled} ${weightLbsBtn.isPressed}")
+        Log.d(
+            "getSelection",
+            "isHeight ${heightCmBtn.isEnabled} ${heightCmBtn.isActivated} ${heightCmBtn.isPressed} ${weightLbsBtn.isActivated} ${weightLbsBtn.isEnabled} ${weightLbsBtn.isPressed}"
+        )
         if (heightCmBtn.isEnabled) {
             val height = if (heightET.text.isNotEmpty()) heightET.text.toString().toInt() else 0
             return checkIfTooSmallOrTooTall(height)

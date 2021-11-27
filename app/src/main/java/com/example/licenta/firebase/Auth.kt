@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import com.example.licenta.R
 import com.example.licenta.firebase.db.UsersDB
+import com.example.licenta.model.user.Gender
 import com.example.licenta.model.user.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -16,13 +17,13 @@ object Auth {
 
     fun registerUser(
         context: Context,
-        firstName:String,
-        lastName:String,
+        firstName: String,
+        lastName: String,
         email: String,
-        dob:Long,
-        gender:String,
-        height:Int,
-        weight:Int,
+        dob: Long,
+        gender: Gender,
+        height: Int,
+        weight: Int,
         password: String
     ) {
         auth
@@ -58,14 +59,14 @@ object Auth {
     fun loginUser(
         email: String,
         password: String,
-    ) : Task<AuthResult>{
+    ): Task<AuthResult> {
         return auth.signInWithEmailAndPassword(
             email,
             password
         )
     }
 
-    fun currentUser(): FirebaseUser{
+    fun currentUser(): FirebaseUser {
         return auth.currentUser!!
     }
 }

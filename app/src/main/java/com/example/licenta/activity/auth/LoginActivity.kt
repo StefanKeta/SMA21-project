@@ -131,11 +131,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun checkIfUserHasGoals(){
-        GoalsDB.userHasGoals(LoggedUserData.getLoggedUser().uuid){
-            if(it){
+    private fun checkIfUserHasGoals() {
+        GoalsDB.userHasGoals(LoggedUserData.getLoggedUser().uuid) {
+            if (it) {
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-            }else{
+            } else {
                 startActivity(Intent(this@LoginActivity, SetGoalsActivity::class.java))
             }
         }

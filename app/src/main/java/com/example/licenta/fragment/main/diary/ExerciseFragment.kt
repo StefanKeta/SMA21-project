@@ -24,7 +24,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ExerciseFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ExerciseFragment : Fragment(),View.OnClickListener {
+class ExerciseFragment : Fragment(), View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -48,26 +48,26 @@ class ExerciseFragment : Fragment(),View.OnClickListener {
         return view
     }
 
-    private fun initComponents(view:View){
+    private fun initComponents(view: View) {
         addExerciseBtn = view.findViewById(R.id.fragment_diary_exercise_add_btn)
         addExerciseBtn.setOnClickListener(this)
         exercisesRV = view.findViewById(R.id.fragment_diary_exercise_rv)
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.fragment_diary_exercise_add_btn -> openAddExerciseActivity()
         }
     }
 
-    private fun openAddExerciseActivity(){
+    private fun openAddExerciseActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ){
-            if(it.resultCode == Activity.RESULT_OK){
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
                 //
             }
-        }.launch(Intent(context,AddExerciseActivity::class.java))
+        }.launch(Intent(context, AddExerciseActivity::class.java))
     }
 
     companion object {

@@ -20,12 +20,21 @@ object GoalsDB {
                         callback(true)
                     else
                         callback(false)
-                }
-                else throw NoSuchElementException("User does not exist!")
+                } else throw NoSuchElementException("User does not exist!")
             }
             .addOnFailureListener {
                 throw RuntimeException("Something went wrong!")
             }
+    }
 
+    fun addUserGoals(goals: Goals, callback: (Boolean) -> Unit) {
+        db.collection(CollectionsName.GOALS)
+            .add(goals)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    callback(true)
+                } else
+                    callback(false)
+            }
     }
 }

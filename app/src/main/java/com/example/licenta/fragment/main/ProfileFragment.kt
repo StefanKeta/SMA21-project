@@ -28,17 +28,17 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ProfileFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener{
-    private lateinit var fragmentFrameLayout : FrameLayout
-    private lateinit var profilePhoto : ImageView
-    private lateinit var settings : ImageView
+class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener {
+    private lateinit var fragmentFrameLayout: FrameLayout
+    private lateinit var profilePhoto: ImageView
+    private lateinit var settings: ImageView
     private lateinit var infoTab: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    private fun initComponents(view:View){
+    private fun initComponents(view: View) {
         fragmentFrameLayout = view.findViewById(R.id.fragment_profile_items_fragment)
         infoTab = view.findViewById(R.id.fragment_profile_tab_layout)
         infoTab.addOnTabSelectedListener(this)
@@ -47,10 +47,8 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener{
     }
 
 
-
-
-    private fun switchFragment(fragment: Fragment){
-        Toast.makeText(context,"Welcome to ${fragment.javaClass}",Toast.LENGTH_SHORT)
+    private fun switchFragment(fragment: Fragment) {
+        Toast.makeText(context, "Welcome to ${fragment.javaClass}", Toast.LENGTH_SHORT)
             .show()
     }
 
@@ -85,7 +83,7 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener{
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {
-        when(tab!!.position) {
+        when (tab!!.position) {
             0 -> switchFragment(PostsFragment())
             1 -> switchFragment(GoalsFragment())
             2 -> switchFragment(RecordsFragment())

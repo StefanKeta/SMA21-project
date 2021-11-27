@@ -34,7 +34,7 @@ object Util {
 
     fun convertLbsToKg(lbs: Int): Int {
         val weight = (lbs.toDouble() / 2.2046)
-        return if(weight - weight.toInt()>0.50) weight.toInt() + 1 else weight.toInt()
+        return if (weight - weight.toInt() > 0.50) weight.toInt() + 1 else weight.toInt()
     }
 
     fun convertKgToLbs(kg: Double): Int {

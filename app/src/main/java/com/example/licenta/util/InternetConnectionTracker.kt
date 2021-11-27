@@ -10,11 +10,12 @@ import androidx.lifecycle.LiveData
 object InternetConnectionTracker : LiveData<Boolean>() {
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
-    fun trackConnection(context: Context){
-        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    fun trackConnection(context: Context) {
+        connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    private fun createCallback() = object : ConnectivityManager.NetworkCallback(){
+    private fun createCallback() = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             postValue(true)
@@ -31,7 +32,7 @@ object InternetConnectionTracker : LiveData<Boolean>() {
         networkCallback = createCallback()
         val request = NetworkRequest.Builder()
             .build()
-        connectivityManager.registerNetworkCallback(request,networkCallback)
+        connectivityManager.registerNetworkCallback(request, networkCallback)
     }
 
     override fun onInactive() {

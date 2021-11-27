@@ -51,4 +51,23 @@
     <string name="activity_register_dob_date_picker_title">Date of birth</string>
     <string name="activity_register_dob_date_picker_tag">datePickerOpened</string>
     <string name="register_activity_auth_exception_email_exists">The user with the specified email already exists</string>
+    <string name="activity_set_goals_set_your_goals_tv">Set your goals!</string>
+    <string name="activity_set_goals_your_height_tv">Your height:</string>
+    <string name="activity_set_goals_your_weight_tv">Your weight:</string>
+    <string name="activity_set_goals_protein_tv">Protein</string>
+    <string name="activity_set_goals_carbs_tv">Carbs</string>
+    <string name="activity_set_goals_fat_tv">Fat</string>
+    <string name="activity_set_goals_calories_tv">Calories</string>
+    <string name="activity_set_goals_save_goals_et">Save goals</string>
+    <string name="activity_set_goals_i_want_to_tv">I want to:</string>
+    <string name="activity_set_goals_lose_fat_tv">Lose fat</string>
+    <string name="activity_set_goals_maintain_tv">Maintain</string>
+    <string name="activity_set_goals_gain_weight_tv">Gain weight</string>
+    <string name="activity_set_goals_my_activity_is_tv">My activity is:</string>
+    <string name="activity_set_goals_sedentary_tv">Sedentary (little to no exercise)</string>
+    <string name="activity_set_goals_light_tv">Light (3-5 times/week, light intensity)</string>
+    <string name="activity_set_goals_moderate_tv">Moderate (3-5 times/week, moderate intensity)</string>
+    <string name="activity_set_goals_high_intensity_tv">High intensity (4-6 times/week, high intensity)</string>
+    <string name="activity_set_goals_very_high_intensity_tv">Very high intensity (6-7 times/week, very high intensity)</string>
+    <string name="activity_set_goals_calculate_btn">Calculate!</string>
 </resources>
