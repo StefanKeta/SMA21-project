@@ -12,8 +12,6 @@ import com.example.licenta.math.CalorieCalculator
 import com.example.licenta.math.MacroCalculator
 import com.example.licenta.model.user.Goals
 import com.example.licenta.util.PersonalWeightPreference
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import java.util.*
 
 class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
@@ -90,11 +88,11 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
             macros.second
         )
         GoalsDB.addUserGoals(goals){
-            goToMainActivityAttempt(it)
+            goToMainActivityAttemptCallback(it)
         }
     }
 
-    private fun goToMainActivityAttempt(addedSuccessfully: Boolean){
+    private fun goToMainActivityAttemptCallback(addedSuccessfully: Boolean){
         if(addedSuccessfully) startActivity(Intent(this@SetGoalsActivity,MainActivity::class.java))
         else
             Toast

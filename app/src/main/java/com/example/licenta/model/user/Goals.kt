@@ -1,13 +1,16 @@
 package com.example.licenta.model.user
 
+import com.google.firebase.firestore.DocumentId
+
 
 data class Goals(
-    val goalsID: String,
-    val userID: String,
-    val calories: Int,
-    val protein: Int,
-    val carbs: Int,
-    val fat: Int
+    @DocumentId
+    val goalsID: String = "",
+    val userID: String = "",
+    val calories: Int = 0,
+    val protein: Int = 0,
+    val carbs: Int = 0,
+    val fat: Int = 0,
 ) {
     companion object {
         const val GOALS_ID = "goalsID"

@@ -3,6 +3,7 @@ package com.example.licenta.activity.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -12,6 +13,7 @@ import com.example.licenta.R
 import com.example.licenta.activity.MainActivity
 import com.example.licenta.activity.SetGoalsActivity
 import com.example.licenta.data.LoggedUserData
+import com.example.licenta.data.LoggedUserGoals
 import com.example.licenta.firebase.Auth
 import com.example.licenta.firebase.db.GoalsDB
 import com.example.licenta.firebase.db.UsersDB
@@ -132,12 +134,24 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun checkIfUserHasGoals() {
-        GoalsDB.userHasGoals(LoggedUserData.getLoggedUser().uuid) {
+        val userId = LoggedUserData.getLoggedUser().uuid
+        GoalsDB.userHasGoals(userId) {
             if (it) {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                GoalsDB.getUserGoals(userId) {
+                    checkIfGoalsAreSetCallback(it)
+                }
             } else {
                 startActivity(Intent(this@LoginActivity, SetGoalsActivity::class.java))
             }
+        }
+    }
+
+    private fun checkIfGoalsAreSetCallback(areSet: Boolean) {
+        if(areSet){
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+        }else{
+            Toast.makeText(this@LoginActivity, "Oops! Something went wrong!",Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

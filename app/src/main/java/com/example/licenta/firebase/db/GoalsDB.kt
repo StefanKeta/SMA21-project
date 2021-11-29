@@ -1,5 +1,6 @@
 package com.example.licenta.firebase.db
 
+import com.example.licenta.data.LoggedUserGoals
 import com.example.licenta.model.user.Goals
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.RuntimeException
@@ -35,6 +36,26 @@ object GoalsDB {
                     callback(true)
                 } else
                     callback(false)
+            }
+    }
+
+    fun getUserGoals(userId:String,callback: (Boolean) -> Unit){
+        db.collection(CollectionsName.GOALS)
+            .whereEqualTo(Goals.USER_ID, userId)
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful){
+                    val results = it.result!!.documents
+                    if(results.size == 1){
+                        val goals = results[0].toObject(Goals::class.java)
+                        LoggedUserGoals.setGoals(goals!!)
+                        callback(true)
+                    }else{
+                        callback(false)
+                    }
+                }else{
+                    callback(false)
+                }
             }
     }
 }
