@@ -17,7 +17,7 @@
             android:name=".activity.SetGoalsActivity"
             android:exported="true" />
         <activity
-            android:name=".activity.diary.AddMealActivity"
+            android:name=".activity.diary.AddFoodActivity"
             android:exported="true" />
         <activity
             android:name=".activity.diary.AddExerciseActivity"

@@ -70,4 +70,5 @@
     <string name="activity_set_goals_high_intensity_tv">High intensity (4-6 times/week, high intensity)</string>
     <string name="activity_set_goals_very_high_intensity_tv">Very high intensity (6-7 times/week, very high intensity)</string>
     <string name="activity_set_goals_calculate_btn">Calculate!</string>
+    <string name="menu_food_item_holder_kcal_tv">kcal</string>
 </resources>

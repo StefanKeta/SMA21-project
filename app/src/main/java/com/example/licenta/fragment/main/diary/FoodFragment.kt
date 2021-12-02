@@ -1,5 +1,7 @@
 package com.example.licenta.fragment.main.diary
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +11,12 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
+import com.example.licenta.activity.diary.AddFoodActivity
+import com.example.licenta.adapter.MealsAdapter
+import com.example.licenta.model.food.Meal
 import com.google.android.material.tabs.TabLayout
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,9 +30,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class FoodFragment : Fragment(), View.OnClickListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var addFoodBtn: Button
     private lateinit var remainingProteinTV: TextView
     private lateinit var proteinPB: ProgressBar
@@ -35,14 +39,8 @@ class FoodFragment : Fragment(), View.OnClickListener {
     private lateinit var fatPB: ProgressBar
     private lateinit var remainingCaloriesTV: TextView
     private lateinit var caloriesPB: ProgressBar
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var mealsRV : RecyclerView
+    private lateinit var mealsAdapter: MealsAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,10 +60,22 @@ class FoodFragment : Fragment(), View.OnClickListener {
         remainingFatTV = view.findViewById(R.id.fragment_diary_food_fat_remaining_tv)
         fatPB = view.findViewById(R.id.fragment_diary_food_progress_bar_fat)
         remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
+        mealsRV = view.findViewById(R.id.fragment_diary_food_rv)
+        mealsAdapter = MealsAdapter(requireContext(),ArrayList<Meal>())
     }
 
     override fun onClick(v: View?) {
-        //
+        when(v!!.id){
+            R.id.fragment_diary_food_add_food_btn -> goToAddFoodActivity()
+        }
+    }
+
+    private fun goToAddFoodActivity(){
+        val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+            if(result.resultCode == Activity.RESULT_OK){
+            }
+        }
+        startForResult.launch(Intent(context,AddFoodActivity::class.java))
     }
 
     companion object {

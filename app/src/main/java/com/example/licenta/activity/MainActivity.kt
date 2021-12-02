@@ -1,5 +1,6 @@
 package com.example.licenta.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -7,8 +8,11 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.licenta.R
+import com.example.licenta.activity.auth.LoginActivity
+import com.example.licenta.data.LoggedUserData
 import com.example.licenta.fragment.main.DiaryFragment
 import com.example.licenta.fragment.main.HomeFragment
 import com.example.licenta.fragment.main.ProfileFragment
@@ -18,10 +22,10 @@ import com.example.licenta.fragment.main.diary.FoodFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener,
     View.OnClickListener {
-
     private lateinit var navigationBar: BottomNavigationView
     private lateinit var fragmentLayout: FrameLayout
     private lateinit var addFab: FloatingActionButton
@@ -45,7 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initComponents()2
+        initComponents()
     }
 
     private fun initComponents() {
@@ -123,6 +127,24 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             addFab.startAnimation(rotateCloseAnim)
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val auth = FirebaseAuth.getInstance()
+        if (auth.currentUser == null) {
+            Toast.makeText(
+                this@MainActivity,
+                "You are not logged in, signing out",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        } else if (auth.currentUser!!.uid != LoggedUserData.getLoggedUser().uuid) {
+            Toast.makeText(this@MainActivity, "Invalid user, signing out", Toast.LENGTH_SHORT)
+                .show()
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        }
     }
 
 }
