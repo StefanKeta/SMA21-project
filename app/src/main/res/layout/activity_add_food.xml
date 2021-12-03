@@ -17,7 +17,7 @@
         >
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/activity_food_search_for_food_til"
+            android:id="@+id/activity_add_food_search_for_food_til"
             android:layout_width="0dp"
             android:layout_weight="3"
             app:boxBackgroundColor="@android:color/white"
@@ -26,13 +26,14 @@
             android:hint="@string/activity_food_search_for_food_til">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/activity_food_search_for_food_et"
+                android:id="@+id/activity_add_food_search_for_food_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/activity_add_food_barcode_iv"
             android:layout_width="0dp"
             android:layout_height="@dimen/activity_add_food_barcode_icon_size"
             android:layout_weight="1"
@@ -40,7 +41,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/activity_food_scan_food_tv"
+        android:id="@+id/activity_add_food_scan_food_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
