@@ -1,6 +1,7 @@
 package com.example.licenta.activity.camera
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +13,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import com.example.licenta.R
+import com.example.licenta.activity.diary.AddFoodActivity
+import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.util.BarcodeAnalyzer
 import com.example.licenta.util.PermissionsChecker
 import com.google.android.gms.tasks.OnSuccessListener
@@ -65,13 +68,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun bindImage(provider: ProcessCameraProvider) {
-        val preview = Preview
-            .Builder()
-            .build()
-
-    }
-
     private fun setUpCamera() {
         val providerFuture = ProcessCameraProvider.getInstance(this@ScanBarcodeActivity)
 
@@ -86,7 +82,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
 
             val imageAnalysis = ImageAnalysis
                 .Builder()
-                .setTargetResolution(Size(1200,720))
+                .setTargetResolution(Size(1200, 720))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
@@ -109,7 +105,18 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
     private fun scanningCallback(barcode: String) {
-        //
+        FoodDB.foodExists(barcode) { exists ->
+            val intent = Intent(this@ScanBarcodeActivity, AddFoodActivity::class.java)
+            val bundle = Bundle()
+            if (exists) {
+                bundle.putString(BUNDLE_EXTRAS_BARCODE, barcode)
+                bundle.putBoolean(BUNDLE_EXTRAS_EXISTS, true)
+            } else {
+                bundle.putString(BUNDLE_EXTRAS_BARCODE, barcode)
+                bundle.putBoolean(BUNDLE_EXTRAS_EXISTS, false)
+            }
+            startActivity(intent, bundle)
+        }
     }
 
     override fun onStart() {
@@ -126,4 +133,8 @@ class ScanBarcodeActivity : AppCompatActivity() {
         executorService.shutdown()
     }
 
+    companion object {
+        const val BUNDLE_EXTRAS_BARCODE = "barcode"
+        const val BUNDLE_EXTRAS_EXISTS = "exists"
+    }
 }

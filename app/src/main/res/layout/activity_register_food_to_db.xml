@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".activity.diary.RegisterFoodToDbActivity"
+    android:paddingHorizontal="@dimen/app_horizontal_padding_standard"
+    android:paddingVertical="@dimen/app_vertical_padding_standard"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="The food you scanned does not exist in our database. Please add it yourself!"
+        android:textSize="@dimen/text_size_list_item_important"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please add food nutrients per 100g/3.5oz"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/activity_register_food_name_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_register_food_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/activity_register_food_calories_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_register_food_calories_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Calories"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/activity_register_food_protein_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_register_food_protein_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Protein(g)"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/activity_register_food_fat_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_register_food_fat_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Fat(g)"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/activity_register_food_carbs_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/login_form_fields_margin_between"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_register_food_carbs_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Carbs(g)"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <Button
+            android:id="@+id/activity_register_food_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="Cancel"
+            />
+
+        <Button
+            android:id="@+id/activity_register_food_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Save"
+            />
+    </RelativeLayout>
+
+
+</LinearLayout>
