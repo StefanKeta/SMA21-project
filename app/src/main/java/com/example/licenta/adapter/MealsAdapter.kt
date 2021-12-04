@@ -32,7 +32,7 @@ class MealsAdapter(
         TODO("Not yet implemented")
     }
 
-    class MealsViewHolder(val view: View, val ctx: Context) : RecyclerView.ViewHolder(view) {
+    class MealsViewHolder(val view: View, ctx: Context) : RecyclerView.ViewHolder(view) {
         private var mealNo: TextView = view.findViewById(R.id.meal_item_meal_no_tv)
         private var foodRV: RecyclerView = view.findViewById(R.id.meal_item_food_rv)
         private var addFoodBtn: Button = view.findViewById(R.id.meal_item_add_btn)
