@@ -17,8 +17,6 @@ import com.example.licenta.fragment.main.DiaryFragment
 import com.example.licenta.fragment.main.HomeFragment
 import com.example.licenta.fragment.main.ProfileFragment
 import com.example.licenta.fragment.main.SearchFragment
-import com.example.licenta.fragment.main.diary.ExerciseFragment
-import com.example.licenta.fragment.main.diary.FoodFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView

@@ -71,4 +71,15 @@
     <string name="activity_set_goals_very_high_intensity_tv">Very high intensity (6-7 times/week, very high intensity)</string>
     <string name="activity_set_goals_calculate_btn">Calculate!</string>
     <string name="menu_food_item_holder_kcal_tv">kcal</string>
+    <string name="activity_food_info_quantity_tv">Quantity</string>
+    <string name="unit_oz">oz</string>
+    <string name="activity_register_food_save_btn">Save</string>
+    <string name="activity_register_food_cancel_btn">Cancel</string>
+    <string name="activity_register_food_carbs_g_tv">Carbs(g)</string>
+    <string name="activity_register_food_fat_g_tv">Fat(g)</string>
+    <string name="activity_register_food_protein_g_tv">Protein(g)</string>
+    <string name="activity_register_food_name_et">Name</string>
+    <string name="activity_register_food_please_add_tv">Please add food nutrients per 100g/3.5oz</string>
+    <string name="activity_register_food_not_exists_tv">The food you scanned does not exist in our database. Please add it yourself!</string>
+    <string name="activity_login_checking_your_credentials_tv">Checking your credentials...</string>
 </resources>

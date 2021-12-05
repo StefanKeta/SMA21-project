@@ -7,16 +7,12 @@ import android.view.View
 import android.widget.*
 import com.example.licenta.R
 import com.example.licenta.firebase.Auth
-import com.example.licenta.firebase.db.UsersDB
 import com.example.licenta.model.user.Gender
-import com.example.licenta.model.user.User
 import com.example.licenta.util.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.sql.Date
-import java.util.*
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var parentLayout: LinearLayout

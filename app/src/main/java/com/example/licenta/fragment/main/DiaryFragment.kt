@@ -30,10 +30,6 @@ class DiaryFragment(val selectedFragment: String = FOOD_FRAGMENT_CODE) : Fragmen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(com.example.licenta.fragment.main.ARG_PARAM1)
-            param2 = it.getString(com.example.licenta.fragment.main.ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(

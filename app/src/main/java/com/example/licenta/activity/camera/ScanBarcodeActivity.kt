@@ -1,13 +1,11 @@
 package com.example.licenta.activity.camera
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Size
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -15,19 +13,12 @@ import androidx.core.content.ContextCompat
 import com.example.licenta.R
 import com.example.licenta.activity.diary.AddFoodActivity
 import com.example.licenta.firebase.db.FoodDB
+import com.example.licenta.model.food.Food
 import com.example.licenta.util.BarcodeAnalyzer
+import com.example.licenta.util.IntentConstants
 import com.example.licenta.util.PermissionsChecker
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScanner
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import javax.annotation.Nullable
 
 class ScanBarcodeActivity : AppCompatActivity() {
 
@@ -105,15 +96,15 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
     private fun scanningCallback(barcode: String) {
-        FoodDB.foodExists(barcode) { exists ->
+        FoodDB.foodExists(barcode) { exists:Boolean,id:String ->
             val intent = Intent(this@ScanBarcodeActivity, AddFoodActivity::class.java)
             val bundle = Bundle()
             if (exists) {
-                bundle.putString(BUNDLE_EXTRAS_BARCODE, barcode)
-                bundle.putBoolean(BUNDLE_EXTRAS_EXISTS, true)
+                bundle.putString(Food.ID, id)
+                bundle.putBoolean(IntentConstants.EXISTS, true)
             } else {
-                bundle.putString(BUNDLE_EXTRAS_BARCODE, barcode)
-                bundle.putBoolean(BUNDLE_EXTRAS_EXISTS, false)
+                bundle.putString(Food.BARCODE, barcode)
+                bundle.putBoolean(IntentConstants.EXISTS, false)
             }
             startActivity(intent, bundle)
         }
@@ -131,10 +122,5 @@ class ScanBarcodeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         executorService.shutdown()
-    }
-
-    companion object {
-        const val BUNDLE_EXTRAS_BARCODE = "barcode"
-        const val BUNDLE_EXTRAS_EXISTS = "exists"
     }
 }

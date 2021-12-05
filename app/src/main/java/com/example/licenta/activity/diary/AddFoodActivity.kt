@@ -7,22 +7,32 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.ImageView
+import android.widget.Button
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.activity.camera.ScanBarcodeActivity
-import com.example.licenta.adapter.MealsFoodAdapter
+import com.example.licenta.adapter.AddFoodAdapter
+import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.model.food.Food
+import com.example.licenta.util.IntentConstants
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class AddFoodActivity : AppCompatActivity(), View.OnClickListener {
+class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
+    AddFoodAdapter.OnAddFoodItemClickListener {
     private lateinit var searchFoodLayout: TextInputLayout
     private lateinit var searchFoodET: TextInputEditText
-    private lateinit var barcodeIV: ImageView
+    private lateinit var barcodeBtn: Button
+    private lateinit var addCustomFoodBtn: Button
     private lateinit var foodRV: RecyclerView
-    private lateinit var adapter: MealsFoodAdapter
+    private lateinit var adapter: AddFoodAdapter
+    private lateinit var barcodeScannerActivityResult: ActivityResultLauncher<Intent>
+    private lateinit var foodInfoActivityResult: ActivityResultLauncher<Intent>
+    private lateinit var registerFoodActivityResult: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
@@ -32,27 +42,55 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener {
     private fun initComponents() {
         searchFoodLayout = findViewById(R.id.activity_add_food_search_for_food_til)
         searchFoodET = findViewById(R.id.activity_add_food_search_for_food_et)
-        barcodeIV = findViewById(R.id.activity_add_food_barcode_iv)
-        barcodeIV.setOnClickListener(this)
+        barcodeBtn = findViewById(R.id.activity_add_food_barcode_btn)
+        barcodeBtn.setOnClickListener(this)
+        addCustomFoodBtn = findViewById(R.id.activity_add_food_add_btn)
+        addCustomFoodBtn.setOnClickListener(this)
         searchFoodET.addTextChangedListener(textWatcher())
-        setUpRecyclerView()
+        foodRV = findViewById(R.id.activity_add_food_rv)
+        setInitialFoods()
+        declareActivityResults()
+    }
+
+    private fun declareActivityResults() {
+        barcodeScannerActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                handleResponseFromCamera(result)
+            }
+        foodInfoActivityResult =
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                handleResponseFromFoodInfoActivity(result)
+            }
+        registerFoodActivityResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                handleResponseFromRegisterFoodActivity(result)
+            }
+    }
+
+    private fun setInitialFoods(limit: Long = 20) {
+        setUpRecyclerView(limit)
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.activity_add_food_barcode_iv -> openCameraToScan()
+            R.id.activity_add_food_barcode_btn -> openCameraToScan()
+            R.id.activity_add_food_add_btn -> launchRegisterFoodActivity()
         }
     }
 
+    override fun onAdapterItemClick(food: Food) {
+        launchFoodInfoActivity(food.id)
+    }
+
     private fun openCameraToScan() {
-        val startForResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val data = result.data!!.extras!!
-                    handleResponseFromCamera(data)
-                }
-            }
-        startForResult.launch(Intent(this@AddFoodActivity, ScanBarcodeActivity::class.java))
+        barcodeScannerActivityResult.launch(
+            Intent(
+                this@AddFoodActivity,
+                ScanBarcodeActivity::class.java
+            )
+        )
     }
 
     private fun textWatcher(): TextWatcher {
@@ -62,7 +100,7 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                TODO("Not yet implemented")
+                displayFoods(s.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -72,35 +110,73 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun handleResponseFromCamera(data: Bundle) {
-        val foodExists = data.getBoolean(ScanBarcodeActivity.BUNDLE_EXTRAS_EXISTS)
-        val foodBarcode = data.getString(ScanBarcodeActivity.BUNDLE_EXTRAS_BARCODE)
+    private fun displayFoods(nameToMatch: String) {
+        val options = FoodDB.searchForFoodByNamePrefix(nameToMatch)
+        adapter = AddFoodAdapter(this, this, options)
+    }
 
-        if (foodExists) {
-            val intent = Intent(this@AddFoodActivity, FoodInfoActivity::class.java)
-            intent.putExtra(ScanBarcodeActivity.BUNDLE_EXTRAS_BARCODE,foodBarcode)
-            val goToFoodInfo =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult(),
-                    {
-                        //addFoodOrNot
-                    }
-                )
-            goToFoodInfo.launch(intent)
-        } else {
-            val intent = Intent(this@AddFoodActivity, RegisterFoodToDbActivity::class.java)
-            intent.putExtra(ScanBarcodeActivity.BUNDLE_EXTRAS_BARCODE,foodBarcode)
-            val goToAddFoodToFirestore =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult(),
-                    {
+    private fun launchRegisterFoodActivity() {
+        val intent = Intent(this@AddFoodActivity, RegisterFoodToDbActivity::class.java)
+        intent.putExtra(Food.BARCODE, "")
+        registerFoodActivityResult.launch(intent)
+    }
 
-                    })
-            goToAddFoodToFirestore.launch(intent)
+    private fun handleResponseFromCamera(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = result.data!!.extras!!
+            val foodExists = extras.getBoolean(IntentConstants.EXISTS)
+            if (foodExists) {
+                val id = extras.getString(Food.ID)
+                val intent = Intent(this@AddFoodActivity, FoodInfoActivity::class.java)
+                intent.putExtra(Food.ID, id)
+                foodInfoActivityResult.launch(intent)
+            } else {
+                val foodBarcode = extras.getString(Food.BARCODE)
+                val intent = Intent(this@AddFoodActivity, RegisterFoodToDbActivity::class.java)
+                intent.putExtra(Food.BARCODE, foodBarcode)
+                registerFoodActivityResult.launch(intent)
+            }
         }
     }
 
-    private fun setUpRecyclerView() {
-        foodRV = findViewById(R.id.activity_add_food_rv)
-        adapter = MealsFoodAdapter(this@AddFoodActivity, ArrayList<Food>())
+    private fun handleResponseFromRegisterFoodActivity(result: ActivityResult) {
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val isAdded = data!!.getBooleanExtra(RegisterFoodToDbActivity.IS_FOOD_ADDED, false)
+            if (isAdded) {
+                setInitialFoods()
+            }
+        }
+    }
+
+    private fun handleResponseFromFoodInfoActivity(result: ActivityResult) {
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val extras = data!!.extras
+        }
+    }
+
+    private fun setUpRecyclerView(limit: Long) {
+        val options = FoodDB.initialAddFoodAdapterList(limit)
+        adapter = AddFoodAdapter(this@AddFoodActivity, this, options)
+        foodRV.layoutManager = LinearLayoutManager(this)
         foodRV.adapter = adapter
     }
+    
+    private fun launchFoodInfoActivity(foodId:String){
+        val intent = Intent(this@AddFoodActivity,FoodInfoActivity::class.java)
+        intent.putExtra(Food.ID,foodId)
+        foodInfoActivityResult.launch(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.stopListening()
+    }
+
 }

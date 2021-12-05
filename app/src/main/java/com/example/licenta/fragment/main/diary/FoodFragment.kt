@@ -8,16 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.activity.diary.AddFoodActivity
 import com.example.licenta.adapter.MealsAdapter
 import com.example.licenta.model.food.Meal
-import com.google.android.material.tabs.TabLayout
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +40,7 @@ class FoodFragment : Fragment(), View.OnClickListener {
     private lateinit var caloriesPB: ProgressBar
     private lateinit var mealsRV : RecyclerView
     private lateinit var mealsAdapter: MealsAdapter
+    private lateinit var addFoodResultLauncher: ActivityResultLauncher<Intent>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,6 +62,10 @@ class FoodFragment : Fragment(), View.OnClickListener {
         remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
         mealsRV = view.findViewById(R.id.fragment_diary_food_rv)
         mealsAdapter = MealsAdapter(requireContext(),ArrayList<Meal>())
+        addFoodResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+            if(result.resultCode == Activity.RESULT_OK){
+            }
+        }
     }
 
     override fun onClick(v: View?) {
@@ -71,11 +75,7 @@ class FoodFragment : Fragment(), View.OnClickListener {
     }
 
     private fun goToAddFoodActivity(){
-        val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if(result.resultCode == Activity.RESULT_OK){
-            }
-        }
-        startForResult.launch(Intent(context,AddFoodActivity::class.java))
+        addFoodResultLauncher.launch(Intent(context,AddFoodActivity::class.java))
     }
 
     companion object {

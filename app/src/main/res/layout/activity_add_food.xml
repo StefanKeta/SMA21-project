@@ -11,19 +11,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="4"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/scroll_view_padding"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/app_padding_small"
         >
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activity_add_food_search_for_food_til"
-            android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_width="match_parent"
             app:boxBackgroundColor="@android:color/white"
             android:layout_height="wrap_content"
             app:startIconDrawable= "@drawable/ic_baseline_search_24"
-            android:hint="@string/activity_food_search_for_food_til">
+            android:hint="@string/activity_food_search_for_food_til"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activity_add_food_search_for_food_et"
@@ -32,22 +32,72 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/activity_add_food_barcode_iv"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/activity_add_food_barcode_icon_size"
-            android:layout_weight="1"
-            android:src="@drawable/barcode"/>
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/app_padding_medium"
+            android:gravity="center"
+            android:weightSum="2"
+            >
 
-    <TextView
-        android:id="@+id/activity_add_food_scan_food_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/activity_add_food_scan_barcode_tv"
-        android:padding="@dimen/scroll_view_padding"
-        />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+
+                <Button
+                    android:id="@+id/activity_add_food_add_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:icon="@drawable/ic_baseline_add_24"
+                    app:iconGravity="textEnd"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add custom food"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+
+                <Button
+                    android:id="@+id/activity_add_food_barcode_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/activity_add_food_barcode_icon_size"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    app:icon="@drawable/ic_barcode_scan"
+                    app:iconGravity="textEnd"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Search by barcode"
+                    />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_add_food_rv"

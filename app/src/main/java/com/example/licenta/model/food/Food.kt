@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentId
 data class Food(
     @DocumentId
     val id: String = "",
+    val name: String = "",
     val barcode: String = "",
     val calories: Int = 0,
     val protein: Int = 0,
@@ -13,6 +14,7 @@ data class Food(
 ) {
     companion object {
         const val ID = "id"
+        const val NAME = "name"
         const val BARCODE = "barcode"
         const val CALORIES = "calories"
         const val PROTEIN = "protein"

@@ -37,15 +37,11 @@ class MealsAdapter(
         private var foodRV: RecyclerView = view.findViewById(R.id.meal_item_food_rv)
         private var addFoodBtn: Button = view.findViewById(R.id.meal_item_add_btn)
         private var removeFoodBtn: Button = view.findViewById(R.id.meal_item_remove_btn)
-        private var adapter: MealsFoodAdapter = MealsFoodAdapter(ctx, ArrayList<Food>())
 
         fun update(position: Int) {
             mealNo.text = "Meal ${position + 1}"
         }
 
-        init {
-            foodRV.adapter = adapter
-        }
     }
 
 
