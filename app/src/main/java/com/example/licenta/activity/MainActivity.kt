@@ -3,6 +3,7 @@ package com.example.licenta.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
@@ -13,10 +14,12 @@ import androidx.fragment.app.Fragment
 import com.example.licenta.R
 import com.example.licenta.activity.auth.LoginActivity
 import com.example.licenta.data.LoggedUserData
+import com.example.licenta.firebase.db.UsersDB
 import com.example.licenta.fragment.main.DiaryFragment
 import com.example.licenta.fragment.main.HomeFragment
 import com.example.licenta.fragment.main.ProfileFragment
 import com.example.licenta.fragment.main.SearchFragment
+import com.example.licenta.model.user.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
@@ -130,18 +133,29 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     override fun onStart() {
         super.onStart()
         val auth = FirebaseAuth.getInstance()
-        if (auth.currentUser == null) {
-            Toast.makeText(
-                this@MainActivity,
-                "You are not logged in, signing out",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-        } else if (auth.currentUser!!.uid != LoggedUserData.getLoggedUser().uuid) {
-            Toast.makeText(this@MainActivity, "Invalid user, signing out", Toast.LENGTH_SHORT)
-                .show()
-            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        when {
+            auth.currentUser == null -> {
+                Toast.makeText(
+                    this@MainActivity,
+                    "You are not logged in, signing out",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            }
+            auth.currentUser != null -> {
+                val id = auth.currentUser!!.uid
+                UsersDB
+                    .getUser(id) {
+                        if (it != null)
+                            LoggedUserData.setLoggedUser(it)
+                    }
+            }
+            else -> {
+                Toast.makeText(this@MainActivity, "Invalid user, signing out", Toast.LENGTH_SHORT)
+                    .show()
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            }
         }
     }
 

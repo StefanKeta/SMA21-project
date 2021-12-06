@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:weightSum="5"
     android:paddingVertical="@dimen/app_horizontal_padding_standard"
-    android:paddingHorizontal="@dimen/app_padding_small">
+    android:paddingHorizontal="@dimen/app_padding_small"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/add_food_view_holder_food_name_tv"

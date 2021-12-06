@@ -2,9 +2,12 @@ package com.example.licenta.firebase.db
 
 import com.example.licenta.model.food.Food
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.lang.RuntimeException
+import java.util.*
+import kotlin.collections.ArrayList
 
 object FoodDB {
     private val db: FirebaseFirestore by lazy {
@@ -46,9 +49,11 @@ object FoodDB {
     fun searchForFoodByNamePrefix(nameToMatch: String): FirestoreRecyclerOptions<Food> {
         val query = db
             .collection(CollectionsName.FOOD)
-            .whereGreaterThanOrEqualTo(Food.NAME, nameToMatch)
-            .whereLessThanOrEqualTo(Food.NAME, "$nameToMatch~")
-            .orderBy(Food.NAME, Query.Direction.DESCENDING)
+            .whereGreaterThanOrEqualTo(Food.NAME,
+                nameToMatch.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+            .whereLessThanOrEqualTo(Food.NAME,
+                "$nameToMatch~".replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+            .orderBy(Food.NAME, Query.Direction.ASCENDING)
 
         return FirestoreRecyclerOptions.Builder<Food>()
             .setQuery(query, Food::class.java)

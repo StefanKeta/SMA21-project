@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.example.licenta.R
+import com.example.licenta.data.LoggedUserData
 import com.example.licenta.fragment.main.diary.ExerciseFragment
 import com.example.licenta.fragment.main.diary.FoodFragment
 import com.google.android.material.tabs.TabLayout
@@ -22,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DiaryFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DiaryFragment(val selectedFragment: String = FOOD_FRAGMENT_CODE) : Fragment() {
+class DiaryFragment(private val selectedFragment: String = FOOD_FRAGMENT_CODE) : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var tabLayout: TabLayout
@@ -72,7 +73,7 @@ class DiaryFragment(val selectedFragment: String = FOOD_FRAGMENT_CODE) : Fragmen
     }
 
     private fun switchFragment(fragment: Fragment) {
-        val fragmentManager = parentFragmentManager
+        val fragmentManager = childFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_diary_fragment_frame_layout, fragment)
         fragmentTransaction.commit()

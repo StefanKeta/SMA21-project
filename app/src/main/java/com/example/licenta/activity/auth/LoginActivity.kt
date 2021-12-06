@@ -71,6 +71,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun loginUser(email: String, password: String) {
+        loginBtn.isClickable = false
+        Util.hideKeyboard(this)
         if (!validateEmail(email) || !validatePassword(password)) {
             Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT)
                 .show()

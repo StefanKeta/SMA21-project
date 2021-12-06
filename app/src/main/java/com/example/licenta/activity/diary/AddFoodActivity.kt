@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.activity.result.ActivityResult
@@ -14,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
+import com.example.licenta.activity.auth.LoginActivity
 import com.example.licenta.activity.camera.ScanBarcodeActivity
 import com.example.licenta.adapter.AddFoodAdapter
 import com.example.licenta.firebase.db.FoodDB
@@ -21,6 +23,7 @@ import com.example.licenta.model.food.Food
 import com.example.licenta.util.IntentConstants
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 
 class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     AddFoodAdapter.OnAddFoodItemClickListener {
@@ -46,10 +49,32 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         barcodeBtn.setOnClickListener(this)
         addCustomFoodBtn = findViewById(R.id.activity_add_food_add_btn)
         addCustomFoodBtn.setOnClickListener(this)
-        searchFoodET.addTextChangedListener(textWatcher())
+        searchFoodET.addTextChangedListener(setTextWatcher())
         foodRV = findViewById(R.id.activity_add_food_rv)
         setInitialFoods()
         declareActivityResults()
+    }
+
+    private fun setTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null) {
+                    val searchQuery = s.toString()
+                    Log.d("searchQuery", "onTextChanged: $searchQuery")
+                    displayFoods(searchQuery)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s != null) {
+                    val searchQuery = s.toString()
+                    displayFoods(searchQuery)
+                }
+            }
+        }
     }
 
     private fun declareActivityResults() {
@@ -93,26 +118,10 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         )
     }
 
-    private fun textWatcher(): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                displayFoods(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
-            }
-
-        }
-    }
-
     private fun displayFoods(nameToMatch: String) {
         val options = FoodDB.searchForFoodByNamePrefix(nameToMatch)
-        adapter = AddFoodAdapter(this, this, options)
+        adapter.updateOptions(options)
+        adapter.notifyDataSetChanged()
     }
 
     private fun launchRegisterFoodActivity() {
@@ -160,17 +169,20 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         val options = FoodDB.initialAddFoodAdapterList(limit)
         adapter = AddFoodAdapter(this@AddFoodActivity, this, options)
         foodRV.layoutManager = LinearLayoutManager(this)
+        foodRV.itemAnimator = null
         foodRV.adapter = adapter
     }
-    
-    private fun launchFoodInfoActivity(foodId:String){
-        val intent = Intent(this@AddFoodActivity,FoodInfoActivity::class.java)
-        intent.putExtra(Food.ID,foodId)
+
+    private fun launchFoodInfoActivity(foodId: String) {
+        val intent = Intent(this@AddFoodActivity, FoodInfoActivity::class.java)
+        intent.putExtra(Food.ID, foodId)
         foodInfoActivityResult.launch(intent)
     }
 
     override fun onStart() {
         super.onStart()
+        if (FirebaseAuth.getInstance().currentUser == null)
+            startActivity(Intent(this@AddFoodActivity, LoginActivity::class.java))
         adapter.startListening()
     }
 

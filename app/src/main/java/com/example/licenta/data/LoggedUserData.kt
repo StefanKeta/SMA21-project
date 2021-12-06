@@ -4,7 +4,7 @@ import com.example.licenta.model.user.User
 import java.util.*
 
 object LoggedUserData {
-    private lateinit var user: User
+    private var user: User = User()
 
     fun setLoggedUser(user: User) {
         this.user = user
