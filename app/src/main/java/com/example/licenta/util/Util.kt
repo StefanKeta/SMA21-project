@@ -51,18 +51,4 @@ object Util {
             )
     }
 
-    fun getTimestampFromDate(date: String): Timestamp {
-        return Timestamp(
-            SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-                .parse(date)
-                .time
-        )
-    }
-
-    fun getDateFromTimestamp(timestamp: Long): String {
-        return SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-            .format(Date(timestamp))
-    }
-
-
 }

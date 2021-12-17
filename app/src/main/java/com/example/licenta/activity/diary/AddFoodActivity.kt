@@ -18,6 +18,9 @@ import com.example.licenta.R
 import com.example.licenta.activity.auth.LoginActivity
 import com.example.licenta.activity.camera.ScanBarcodeActivity
 import com.example.licenta.adapter.AddFoodAdapter
+import com.example.licenta.contract.BarcodeScannerContract
+import com.example.licenta.contract.FoodInfoContract
+import com.example.licenta.contract.RegisterFoodContract
 import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.model.food.Food
 import com.example.licenta.util.IntentConstants
@@ -33,9 +36,14 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     private lateinit var addCustomFoodBtn: Button
     private lateinit var foodRV: RecyclerView
     private lateinit var adapter: AddFoodAdapter
-    private lateinit var barcodeScannerActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var foodInfoActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var registerFoodActivityResult: ActivityResultLauncher<Intent>
+    private val barcodeScannerActivityResult = registerForActivityResult(
+        BarcodeScannerContract()
+    ) { extras ->
+        if (extras != null)
+            handleResponseFromCamera(extras)
+    }
+    private lateinit var foodInfoActivityResult: ActivityResultLauncher<String>
+    private lateinit var registerFoodActivityResult: ActivityResultLauncher<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
@@ -52,7 +60,6 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         searchFoodET.addTextChangedListener(setTextWatcher())
         foodRV = findViewById(R.id.activity_add_food_rv)
         setInitialFoods()
-        declareActivityResults()
     }
 
     private fun setTextWatcher(): TextWatcher {
@@ -77,23 +84,6 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
-    private fun declareActivityResults() {
-        barcodeScannerActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                handleResponseFromCamera(result)
-            }
-        foodInfoActivityResult =
-            registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()
-            ) { result ->
-                handleResponseFromFoodInfoActivity(result)
-            }
-        registerFoodActivityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                handleResponseFromRegisterFoodActivity(result)
-            }
-    }
-
     private fun setInitialFoods(limit: Long = 20) {
         setUpRecyclerView(limit)
     }
@@ -110,12 +100,7 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun openCameraToScan() {
-        barcodeScannerActivityResult.launch(
-            Intent(
-                this@AddFoodActivity,
-                ScanBarcodeActivity::class.java
-            )
-        )
+        barcodeScannerActivityResult.launch(Unit)
     }
 
     private fun displayFoods(nameToMatch: String) {
@@ -126,35 +111,35 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun launchRegisterFoodActivity() {
         val intent = Intent(this@AddFoodActivity, RegisterFoodToDbActivity::class.java)
-        intent.putExtra(Food.BARCODE, "")
-        registerFoodActivityResult.launch(intent)
+        registerFoodActivityResult.launch("")
     }
 
-    private fun handleResponseFromCamera(result: ActivityResult) {
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = result.data!!.extras!!
-            val foodExists = extras.getBoolean(IntentConstants.EXISTS)
-            if (foodExists) {
-                val id = extras.getString(Food.ID)
-                val intent = Intent(this@AddFoodActivity, FoodInfoActivity::class.java)
-                intent.putExtra(Food.ID, id)
-                foodInfoActivityResult.launch(intent)
-            } else {
-                val foodBarcode = extras.getString(Food.BARCODE)
-                val intent = Intent(this@AddFoodActivity, RegisterFoodToDbActivity::class.java)
-                intent.putExtra(Food.BARCODE, foodBarcode)
-                registerFoodActivityResult.launch(intent)
+    private fun handleResponseFromCamera(extras: Bundle) {
+        val foodExists = extras.getBoolean(IntentConstants.EXISTS)
+        if (foodExists) {
+            val id = extras.getString(Food.ID)!!
+            foodInfoActivityResult = registerForActivityResult(
+                FoodInfoContract()
+            ){
+
             }
+
+        } else {
+            val foodBarcode = extras.getString(Food.BARCODE)!!
+            registerFoodActivityResult =
+                registerForActivityResult(RegisterFoodContract()) { result ->
+                    if (result != null)
+                        handleResponseFromRegisterFoodActivity(result)
+                }
+            registerFoodActivityResult.launch(foodBarcode)
         }
     }
 
-    private fun handleResponseFromRegisterFoodActivity(result: ActivityResult) {
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            val isAdded = data!!.getBooleanExtra(RegisterFoodToDbActivity.IS_FOOD_ADDED, false)
-            if (isAdded) {
-                setInitialFoods()
-            }
+
+    private fun handleResponseFromRegisterFoodActivity(extras: Bundle) {
+        val isAdded = extras.getBoolean(RegisterFoodToDbActivity.IS_FOOD_ADDED, false)
+        if (isAdded) {
+            setInitialFoods()
         }
     }
 
@@ -174,9 +159,7 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun launchFoodInfoActivity(foodId: String) {
-        val intent = Intent(this@AddFoodActivity, FoodInfoActivity::class.java)
-        intent.putExtra(Food.ID, foodId)
-        foodInfoActivityResult.launch(intent)
+        foodInfoActivityResult.launch(foodId)
     }
 
     override fun onStart() {

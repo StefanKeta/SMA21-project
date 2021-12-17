@@ -21,19 +21,4 @@
 
     </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        >
-
-        <ImageView
-            android:id="@+id/activity_barcode_scanner_background_iv"
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:background="@drawable/barcode_scanner_background"
-            />
-
-
-    </LinearLayout>
 </RelativeLayout>

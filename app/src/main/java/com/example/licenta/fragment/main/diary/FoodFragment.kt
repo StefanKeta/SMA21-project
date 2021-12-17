@@ -3,6 +3,7 @@ package com.example.licenta.fragment.main.diary
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -64,6 +65,7 @@ class FoodFragment : Fragment(), View.OnClickListener {
         mealsAdapter = MealsAdapter(requireContext(),ArrayList<Meal>())
         addFoodResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == Activity.RESULT_OK){
+                Log.d("foodExists", "addFoodSucceeded")
             }
         }
     }

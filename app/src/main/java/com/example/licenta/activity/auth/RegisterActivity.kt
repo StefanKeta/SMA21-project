@@ -8,6 +8,7 @@ import android.widget.*
 import com.example.licenta.R
 import com.example.licenta.firebase.Auth
 import com.example.licenta.model.user.Gender
+import com.example.licenta.util.Date
 import com.example.licenta.util.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -167,7 +168,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             .show(supportFragmentManager, null)
 
         datePicker.addOnPositiveButtonClickListener {
-            dobET.setText(Util.getDateFromTimestamp(datePicker.selection!!))
+            dobET.setText(Date.getDateFromTimestamp(datePicker.selection!!))
             datePicker.dismiss()
         }
 
@@ -187,13 +188,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             isHeightValid() &&
             isWeightValid()
         ) {
-            val dobTimestamp = Util.getTimestampFromDate(dobET.text.toString())
+            val dobTimestamp = Date.getTimestampFromDate(dobET.text.toString())
             Auth.registerUser(
                 this,
                 firstNameET.text.toString().trim(),
                 lastNameET.text.toString().trim(),
                 emailET.text.toString().trim(),
-                dobTimestamp.time,
+                dobTimestamp.toLong(),
                 getGender(),
                 heightET.text.toString().trim().toInt(),
                 weightET.text.toString().trim().toInt(), passwordET.text.toString().trim()

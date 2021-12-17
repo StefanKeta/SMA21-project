@@ -52,17 +52,17 @@
                 android:paddingHorizontal="@dimen/app_horizontal_padding_standard"
                 >
 
-                <ImageView
+                <Button
                     android:id="@+id/fragment_diary_back_navigation_btn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_navigate_before_24"
+                    app:icon = "@drawable/ic_baseline_navigate_before_24"
                     android:contentDescription="@string/fragment_diary_calendar_before_btn" />
 
 
-                <TextView
+                <Button
                     android:id="@+id/fragment_diary_pick_date_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -72,13 +72,13 @@
                     />
 
 
-                <ImageView
+                <Button
                     android:id="@+id/fragment_diary_next_navigation_btn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_navigate_next_24"
+                    app:icon = "@drawable/ic_baseline_navigate_next_24"
                     android:contentDescription="@string/fragment_diary_calendar_before_btn" />
             </LinearLayout>
 
