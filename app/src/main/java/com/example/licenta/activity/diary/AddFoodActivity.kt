@@ -127,21 +127,14 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         } else {
             val foodBarcode = extras.getString(Food.BARCODE)!!
             registerFoodActivityResult =
-                registerForActivityResult(RegisterFoodContract()) { result ->
-                    if (result != null)
-                        handleResponseFromRegisterFoodActivity(result)
+                registerForActivityResult(RegisterFoodContract()) { isAdded ->
+                    if (isAdded)
+                        setInitialFoods()
                 }
             registerFoodActivityResult.launch(foodBarcode)
         }
     }
 
-
-    private fun handleResponseFromRegisterFoodActivity(extras: Bundle) {
-        val isAdded = extras.getBoolean(RegisterFoodToDbActivity.IS_FOOD_ADDED, false)
-        if (isAdded) {
-            setInitialFoods()
-        }
-    }
 
     private fun handleResponseFromFoodInfoActivity(result: ActivityResult) {
         if (result.resultCode == RESULT_OK) {

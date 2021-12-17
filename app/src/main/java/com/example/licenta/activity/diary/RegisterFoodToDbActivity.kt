@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.example.licenta.R
 import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.model.food.Food
+import com.example.licenta.util.IntentConstants
 import com.example.licenta.util.Util
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -65,24 +66,24 @@ class RegisterFoodToDbActivity : AppCompatActivity(), View.OnClickListener {
     private fun buttonPressed(id: Int) {
         val intent = Intent(this@RegisterFoodToDbActivity, AddFoodActivity::class.java)
         if (id == R.id.activity_register_food_cancel_btn) {
-            intent.putExtra(IS_FOOD_ADDED, false)
-            startActivity(intent)
+            intent.putExtra(IntentConstants.IS_FOOD_ADDED, false)
+            setResult(RESULT_OK,intent)
         } else {
             if (areAllFieldsFilled()) {
                 val barcode = getIntent()
-                    .getStringExtra(Food.BARCODE)
+                        .getStringExtra(Food.BARCODE)
                 val food = Food(
-                    UUID.randomUUID().toString(),
-                    nameET.text.toString().trim(),
-                    barcode ?: "",
-                    caloriesET.text.toString().trim().toInt(),
-                    proteinET.text.toString().trim().toInt(),
-                    carbsET.text.toString().trim().toInt(),
-                    fatET.text.toString().trim().toInt()
+                        UUID.randomUUID().toString(),
+                        nameET.text.toString().trim(),
+                        barcode ?: "",
+                        caloriesET.text.toString().trim().toInt(),
+                        proteinET.text.toString().trim().toInt(),
+                        carbsET.text.toString().trim().toInt(),
+                        fatET.text.toString().trim().toInt()
                 )
                 FoodDB.addFood(food) { isAdded ->
-                    intent.putExtra(IS_FOOD_ADDED, isAdded)
-                    startActivity(intent)
+                    intent.putExtra(IntentConstants.IS_FOOD_ADDED, isAdded)
+                    setResult(RESULT_OK,intent)
                 }
             }
         }
@@ -90,10 +91,10 @@ class RegisterFoodToDbActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun areAllFieldsFilled(): Boolean {
         if (nameET.text!!.isNotEmpty() &&
-            caloriesET.text!!.isNotEmpty() &&
-            fatET.text!!.isNotEmpty() &&
-            carbsET.text!!.isNotEmpty() &&
-            proteinET.text!!.isNotEmpty()
+                caloriesET.text!!.isNotEmpty() &&
+                fatET.text!!.isNotEmpty() &&
+                carbsET.text!!.isNotEmpty() &&
+                proteinET.text!!.isNotEmpty()
         ) return true
         if (nameET.text!!.isEmpty())
             nameTIL.error = "Please enter food name"
@@ -108,7 +109,4 @@ class RegisterFoodToDbActivity : AppCompatActivity(), View.OnClickListener {
         return false
     }
 
-    companion object {
-        const val IS_FOOD_ADDED = "added"
-    }
 }
