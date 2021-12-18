@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -40,6 +42,14 @@ object Util {
     fun convertKgToLbs(kg: Double): Int {
         val weight = (kg * 2.2046)
         return if (weight - weight.toInt() > 0.50) weight.toInt() + 1 else weight.toInt()
+    }
+
+    fun convertOzToG(oz: Double): Double {
+        return BigDecimal(oz * 28.35).setScale(2, RoundingMode.HALF_EVEN).toDouble()
+    }
+
+    fun convertGToOZ(g: Double): Double {
+        return BigDecimal(g / 28.35).setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
 
     fun hideKeyboard(activity: Activity) {

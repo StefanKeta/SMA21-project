@@ -19,7 +19,7 @@ class RegisterFoodContract : ActivityResultContract<String, Boolean>() {
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
         if (resultCode == Activity.RESULT_OK && intent != null) {
-            return intent.getBooleanExtra(IntentConstants.IS_FOOD_ADDED, false)
+            return intent.getBooleanExtra(IntentConstants.IS_FOOD_SAVED, false)
         }
         return false
     }

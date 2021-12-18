@@ -82,4 +82,6 @@
     <string name="activity_register_food_please_add_tv">Please add food nutrients per 100g/3.5oz</string>
     <string name="activity_register_food_not_exists_tv">The food you scanned does not exist in our database. Please add it yourself!</string>
     <string name="activity_login_checking_your_credentials_tv">Checking your credentials...</string>
+    <string name="unit_g">g</string>
+    <string name="activity_food_info_100_grams">100</string>
 </resources>

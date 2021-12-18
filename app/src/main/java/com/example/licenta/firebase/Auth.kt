@@ -59,14 +59,22 @@ object Auth {
     fun loginUser(
         email: String,
         password: String,
-    ): Task<AuthResult> {
-        return auth.signInWithEmailAndPassword(
+        callback:(Boolean)->Unit
+    ){
+        auth.signInWithEmailAndPassword(
             email,
             password
         )
+            .addOnCompleteListener { authResult ->
+                if(authResult.isSuccessful){
+                    callback(true)
+                }else{
+                    callback(false)
+                }
+            }
     }
 
-    fun currentUser(): FirebaseUser {
-        return auth.currentUser!!
+    fun currentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 }

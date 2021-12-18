@@ -1,6 +1,6 @@
 package com.example.licenta.model.food
 
-enum class MeasureUnitEnum {
+enum class FoodMeasureUnitEnum {
     GRAM,
     OZ
 }

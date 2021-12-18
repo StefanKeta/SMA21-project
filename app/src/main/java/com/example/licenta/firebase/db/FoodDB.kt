@@ -3,7 +3,6 @@ package com.example.licenta.firebase.db
 import android.util.Log
 import com.example.licenta.model.food.Food
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.lang.RuntimeException
@@ -35,7 +34,29 @@ object FoodDB {
                 }
     }
 
-    fun initialAddFoodAdapterList(limit: Long = 20): FirestoreRecyclerOptions<Food> {
+    fun getFoodById(id:String,callback: (Food)->Unit){
+        db
+            .collection(CollectionsName.FOOD)
+            .whereEqualTo(Food.ID,id)
+            .get()
+            .addOnCompleteListener{result ->
+                if (result.isSuccessful){
+                    val document = result.result.documents
+                    if(document.size == 1){
+                        val food = document[0].toObject(Food::class.java)
+                        if(food != null){
+                            callback(food)
+                        }else
+                            throw RuntimeException("Could not parse document to a Food object!")
+                    }else{
+                        throw RuntimeException("Oops! Something went wrong!")
+                    }
+                } else
+                    throw RuntimeException("Searching failed!")
+            }
+    }
+
+    fun initialAddFoodAdapterListOptions(limit: Long = 20): FirestoreRecyclerOptions<Food> {
         val query = db
                 .collection(CollectionsName.FOOD)
                 .orderBy(Food.NAME, Query.Direction.DESCENDING)
@@ -87,16 +108,16 @@ object FoodDB {
                 }
     }
 
-    fun addFood(food: Food, isAdded: (Boolean) -> Unit) {
+    fun saveFood(food: Food, isSaved: (Boolean) -> Unit) {
         if (food.barcode.isEmpty()) {
             db
                     .collection(CollectionsName.FOOD)
                     .add(food)
                     .addOnCompleteListener { documentRef ->
                         if (documentRef.isSuccessful) {
-                            isAdded(true)
+                            isSaved(true)
                         } else {
-                            isAdded(false)
+                            isSaved(false)
                         }
                     }
         } else {
@@ -112,13 +133,13 @@ object FoodDB {
                                         .add(food)
                                         .addOnCompleteListener { documentRef ->
                                             if (documentRef.isSuccessful) {
-                                                isAdded(true)
+                                                isSaved(true)
                                             } else {
-                                                isAdded(false)
+                                                isSaved(false)
                                             }
                                         }
                             } else {
-                                isAdded(false)
+                                isSaved(false)
                             }
                         } else {
                             throw RuntimeException("Failed to retrieve documents!")

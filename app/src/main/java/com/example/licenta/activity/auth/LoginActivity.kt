@@ -21,6 +21,7 @@ import com.example.licenta.model.user.Goals
 import com.example.licenta.model.user.User
 import com.example.licenta.util.Util
 import com.google.android.material.textfield.TextInputLayout
+import java.lang.RuntimeException
 import java.util.*
 import java.util.function.Supplier
 import kotlin.NoSuchElementException
@@ -77,13 +78,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT)
                 .show()
         } else {
-            Auth.loginUser(email, password)
-                .addOnSuccessListener {
-                    UsersDB.getUser(Auth.currentUser().uid) {
-                        getUserCallback(it)
-                    }
-                }
-
+            Auth.loginUser(email, password, ::userLoginCallback)
         }
     }
 
@@ -124,14 +119,25 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
+    private fun userLoginCallback(isLoggedIn: Boolean) {
+        if (isLoggedIn) {
+            UsersDB.getUser(Auth.currentUser()!!.uid,::getUserCallback)
+        } else {
+            Toast.makeText(
+                this,
+                "Invalid credentials!",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+    }
 
     private fun getUserCallback(user: User?) {
         if (user != null) {
             LoggedUserData.setLoggedUser(user)
             checkIfUserHasGoals()
         } else {
-            Toast.makeText(this@LoginActivity, "Invalid credentials!", Toast.LENGTH_SHORT)
-                .show()
+            throw RuntimeException("The user has no data in the database")
         }
     }
 
@@ -149,10 +155,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun checkIfGoalsAreSetCallback(areSet: Boolean) {
-        if(areSet){
+        if (areSet) {
             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-        }else{
-            Toast.makeText(this@LoginActivity, "Oops! Something went wrong!",Toast.LENGTH_SHORT)
+        } else {
+            Toast.makeText(this@LoginActivity, "Oops! Something went wrong!", Toast.LENGTH_SHORT)
                 .show()
         }
     }

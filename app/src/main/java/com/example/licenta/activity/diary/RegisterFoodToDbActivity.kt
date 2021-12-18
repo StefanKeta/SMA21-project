@@ -66,7 +66,7 @@ class RegisterFoodToDbActivity : AppCompatActivity(), View.OnClickListener {
     private fun buttonPressed(id: Int) {
         val intent = Intent(this@RegisterFoodToDbActivity, AddFoodActivity::class.java)
         if (id == R.id.activity_register_food_cancel_btn) {
-            intent.putExtra(IntentConstants.IS_FOOD_ADDED, false)
+            intent.putExtra(IntentConstants.IS_FOOD_SAVED, false)
             setResult(RESULT_OK,intent)
         } else {
             if (areAllFieldsFilled()) {
@@ -81,8 +81,8 @@ class RegisterFoodToDbActivity : AppCompatActivity(), View.OnClickListener {
                         carbsET.text.toString().trim().toInt(),
                         fatET.text.toString().trim().toInt()
                 )
-                FoodDB.addFood(food) { isAdded ->
-                    intent.putExtra(IntentConstants.IS_FOOD_ADDED, isAdded)
+                FoodDB.saveFood(food) { isSaved ->
+                    intent.putExtra(IntentConstants.IS_FOOD_SAVED, isSaved)
                     setResult(RESULT_OK,intent)
                 }
             }

@@ -32,6 +32,14 @@ object Date {
         return getDateFromTimestamp(timestamp)
     }
 
+    fun today():Long{
+        return LocalDate
+            .now()
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .epochSecond
+    }
+
     fun goToDayAfter(date: String): String {
         val timestamp = getTimestampFromDate(date)
         val newTimestamp = Instant.ofEpochSecond(timestamp)

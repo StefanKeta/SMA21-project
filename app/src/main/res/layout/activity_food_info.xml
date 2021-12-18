@@ -39,7 +39,7 @@
                 android:id="@+id/activity_food_info_quantity_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:hint="@string/activity_food_info_quantity_tv"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -51,17 +51,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            app:checkedButton="@id/activity_food_info_kg_rb"
+            app:checkedButton="@id/activity_food_info_g_rb"
             app:singleSelection="true">
 
             <Button
-                android:id="@+id/activity_food_info_kg_rb"
+                android:id="@+id/activity_food_info_g_rb"
                 style="@style/Widget.App.Button.ToggleGroup.LeftButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/unit_kg"
+                android:text="@string/unit_g"
                 android:textAllCaps="false"
-                android:textSize="@dimen/text_size_button_small" />
+                android:textSize="@dimen/text_size_button" />
 
             <Button
                 android:id="@+id/activity_food_info_oz_rb"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/unit_oz"
                 android:textAllCaps="false"
-                android:textSize="@dimen/text_size_button_small" />
+                android:textSize="@dimen/text_size_button" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
 

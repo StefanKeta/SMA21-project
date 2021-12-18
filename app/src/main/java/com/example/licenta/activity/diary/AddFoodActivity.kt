@@ -1,6 +1,5 @@
 package com.example.licenta.activity.diary
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,14 +8,14 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
+import com.example.licenta.activity.MainActivity
 import com.example.licenta.activity.auth.LoginActivity
-import com.example.licenta.activity.camera.ScanBarcodeActivity
 import com.example.licenta.adapter.AddFoodAdapter
 import com.example.licenta.contract.BarcodeScannerContract
 import com.example.licenta.contract.FoodInfoContract
@@ -91,7 +90,7 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.activity_add_food_barcode_btn -> openCameraToScan()
-            R.id.activity_add_food_add_btn -> launchRegisterFoodActivity()
+            R.id.activity_add_food_add_btn -> registerFoodActivityResult.launch("")
         }
     }
 
@@ -109,42 +108,45 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         adapter.notifyDataSetChanged()
     }
 
-    private fun launchRegisterFoodActivity() {
-        val intent = Intent(this@AddFoodActivity, RegisterFoodToDbActivity::class.java)
-        registerFoodActivityResult.launch("")
-    }
-
     private fun handleResponseFromCamera(extras: Bundle) {
         val foodExists = extras.getBoolean(IntentConstants.EXISTS)
         if (foodExists) {
-            val id = extras.getString(Food.ID)!!
-            foodInfoActivityResult = registerForActivityResult(
-                FoodInfoContract()
-            ){
-
-            }
-
-        } else {
-            val foodBarcode = extras.getString(Food.BARCODE)!!
-            registerFoodActivityResult =
-                registerForActivityResult(RegisterFoodContract()) { isAdded ->
-                    if (isAdded)
-                        setInitialFoods()
+            if(extras.getString(Food.ID)!=null) {
+                val id = extras.getString(Food.ID)
+                foodInfoActivityResult = registerForActivityResult(
+                    FoodInfoContract()
+                ) { isSaved ->
+                    handleResponseFromFoodInfoActivity(isSaved)
                 }
-            registerFoodActivityResult.launch(foodBarcode)
+                foodInfoActivityResult.launch(id)
+            }
+        } else {
+            if(extras.getString(Food.BARCODE)!=null) {
+                val foodBarcode = extras.getString(Food.BARCODE)
+                registerFoodActivityResult =
+                    registerForActivityResult(RegisterFoodContract()) { isAdded ->
+                        if (isAdded)
+                            setInitialFoods()
+                    }
+                registerFoodActivityResult.launch(foodBarcode)
+            }
         }
     }
 
-
-    private fun handleResponseFromFoodInfoActivity(result: ActivityResult) {
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            val extras = data!!.extras
+    private fun handleResponseFromFoodInfoActivity(isSaved:Boolean) {
+        if(isSaved){
+            val intent = Intent(this@AddFoodActivity,MainActivity::class.java)
+            intent.putExtra(IntentConstants.IS_SELECTED_FOOD_SAVED,true)
+            setResult(RESULT_OK,intent)
+        }else{
+            Toast
+                .makeText(this@AddFoodActivity, "Could not add it to your diary, try again.",Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
     private fun setUpRecyclerView(limit: Long) {
-        val options = FoodDB.initialAddFoodAdapterList(limit)
+        val options = FoodDB.initialAddFoodAdapterListOptions(limit)
         adapter = AddFoodAdapter(this@AddFoodActivity, this, options)
         foodRV.layoutManager = LinearLayoutManager(this)
         foodRV.itemAnimator = null
