@@ -98,7 +98,7 @@
                 android:layout_marginBottom="@dimen/login_form_fields_margin_between"
                 android:textSize="@dimen/text_size_list_item_important"
                 android:textStyle="bold"
-                tools:text="@string/activity_set_goals_protein_tv" />
+                android:text="@string/activity_set_goals_protein_tv" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -135,7 +135,7 @@
                 android:layout_marginBottom="@dimen/login_form_fields_margin_between"
                 android:textSize="@dimen/text_size_list_item_important"
                 android:textStyle="bold"
-                tools:text="@string/activity_set_goals_carbs_tv" />
+                android:text="@string/activity_set_goals_carbs_tv" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -171,7 +171,7 @@
                 android:layout_marginBottom="@dimen/login_form_fields_margin_between"
                 android:textSize="@dimen/text_size_list_item_important"
                 android:textStyle="bold"
-                tools:text="@string/activity_set_goals_fat_tv" />
+                android:text="@string/activity_set_goals_fat_tv" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -210,7 +210,7 @@
             android:layout_marginBottom="@dimen/login_form_fields_margin_between"
             android:textSize="@dimen/text_size_list_item_important"
             android:textStyle="bold"
-            tools:text="@string/activity_set_goals_calories_tv" />
+            android:text="@string/activity_set_goals_calories_tv" />
 
         <TextView
             android:id="@+id/activity_food_info_calories_tv"

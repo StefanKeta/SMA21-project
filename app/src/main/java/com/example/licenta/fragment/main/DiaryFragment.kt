@@ -1,6 +1,7 @@
 package com.example.licenta.fragment.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,8 @@ class DiaryFragment(private val selectedFragment: String = FOOD_FRAGMENT_CODE) :
     private lateinit var dateBtn: Button
     private lateinit var previousDayBtn: Button
     private lateinit var nextDayBtn: Button
+    private lateinit var onDateChangedListener: OnDateChangedListener
+    private var date = Date.setCurrentDay()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -56,18 +59,16 @@ class DiaryFragment(private val selectedFragment: String = FOOD_FRAGMENT_CODE) :
         }
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab!!.position == 0) switchFragment(FoodFragment())
-                else switchFragment(ExerciseFragment())
+                if (tab!!.position == 0) switchFragment(FoodFragment(date))
+                else switchFragment(ExerciseFragment(date))
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                if (tab!!.position == 0) switchFragment(FoodFragment())
-                else switchFragment(ExerciseFragment())
+                //
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                if (tab!!.position == 0) switchFragment(FoodFragment())
-                else switchFragment(ExerciseFragment())
+                //
             }
         })
         dateBtn = view.findViewById(R.id.fragment_diary_pick_date_btn)
@@ -85,16 +86,22 @@ class DiaryFragment(private val selectedFragment: String = FOOD_FRAGMENT_CODE) :
             R.id.fragment_diary_next_navigation_btn -> {
                 val dayAfter = Date.goToDayAfter(dateBtn.text.toString())
                 dateBtn.text = dayAfter
+                date = dayAfter
+                onDateChangedListener.changeDate(dayAfter)
             }
             R.id.fragment_diary_back_navigation_btn -> {
                 val dayBefore = Date.goToDayBefore(dateBtn.text.toString())
                 dateBtn.text = dayBefore
+                date = dayBefore
+                onDateChangedListener.changeDate(dayBefore)
             }
         }
     }
 
     private fun switchFragment(fragment: Fragment) {
         val fragmentManager = childFragmentManager
+        onDateChangedListener = if(tabLayout.selectedTabPosition == 0) fragment as FoodFragment
+        else fragment as ExerciseFragment
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_diary_fragment_frame_layout, fragment)
         fragmentTransaction.commit()
@@ -134,4 +141,9 @@ class DiaryFragment(private val selectedFragment: String = FOOD_FRAGMENT_CODE) :
                 }
             }
     }
+}
+
+
+interface OnDateChangedListener{
+    fun changeDate(date:String)
 }

@@ -1,7 +1,5 @@
 package com.example.licenta.fragment.main.diary
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,13 +9,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
-import com.example.licenta.activity.diary.AddFoodActivity
-import com.example.licenta.adapter.MealsAdapter
-import com.example.licenta.model.food.Meal
+import com.example.licenta.adapter.FoodAdapter
+import com.example.licenta.contract.AddedFoodForUserContract
+import com.example.licenta.firebase.db.SelectedFoodDB
+import com.example.licenta.fragment.main.OnDateChangedListener
+import com.example.licenta.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +30,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FoodFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FoodFragment : Fragment(), View.OnClickListener {
+class FoodFragment(private var date:String = Date.setCurrentDay()) : Fragment(), View.OnClickListener,OnDateChangedListener {
     private lateinit var addFoodBtn: Button
     private lateinit var remainingProteinTV: TextView
     private lateinit var proteinPB: ProgressBar
@@ -39,18 +40,17 @@ class FoodFragment : Fragment(), View.OnClickListener {
     private lateinit var fatPB: ProgressBar
     private lateinit var remainingCaloriesTV: TextView
     private lateinit var caloriesPB: ProgressBar
-    private lateinit var mealsRV : RecyclerView
-    private lateinit var mealsAdapter: MealsAdapter
-    private lateinit var addFoodResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var foodRV : RecyclerView
+    private lateinit var foodAdapter: FoodAdapter
+    private lateinit var addFoodForUserContract: ActivityResultLauncher<String>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_food, container, false)
         initComponents(view)
         return view
     }
-
     private fun initComponents(view: View) {
         addFoodBtn = view.findViewById(R.id.fragment_diary_food_add_food_btn)
         addFoodBtn.setOnClickListener(this)
@@ -61,11 +61,13 @@ class FoodFragment : Fragment(), View.OnClickListener {
         remainingFatTV = view.findViewById(R.id.fragment_diary_food_fat_remaining_tv)
         fatPB = view.findViewById(R.id.fragment_diary_food_progress_bar_fat)
         remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
-        mealsRV = view.findViewById(R.id.fragment_diary_food_rv)
-        mealsAdapter = MealsAdapter(requireContext(),ArrayList<Meal>())
-        addFoodResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if(result.resultCode == Activity.RESULT_OK){
-                Log.d("foodExists", "addFoodSucceeded")
+        setUpRecyclerView(view)
+        addFoodForUserContract = registerForActivityResult(AddedFoodForUserContract()){ isSaved ->
+            if(isSaved)
+                foodAdapter.notifyDataSetChanged()
+            else{
+                Toast.makeText(context, "Could not add to foods!", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -77,9 +79,34 @@ class FoodFragment : Fragment(), View.OnClickListener {
     }
 
     private fun goToAddFoodActivity(){
-        addFoodResultLauncher.launch(Intent(context,AddFoodActivity::class.java))
+        addFoodForUserContract.launch(date)
     }
 
+    private fun setUpRecyclerView(view: View){
+        foodRV = view.findViewById(R.id.fragment_diary_food_rv)
+        foodRV.layoutManager = LinearLayoutManager(context)
+        foodRV.hasFixedSize()
+        foodRV.itemAnimator = null
+        foodAdapter = FoodAdapter(context!!,SelectedFoodDB.getSelectedFoodsOption(date))
+        foodRV.adapter = foodAdapter
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        foodAdapter.startListening()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        foodAdapter.stopListening()
+    }
+
+    override fun changeDate(date: String) {
+        this.date = date
+        foodAdapter.updateOptions(SelectedFoodDB.getSelectedFoodsOption(date))
+        foodAdapter.notifyDataSetChanged()
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

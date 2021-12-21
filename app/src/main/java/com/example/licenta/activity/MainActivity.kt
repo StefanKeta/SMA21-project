@@ -9,6 +9,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.licenta.R
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private lateinit var navigationBar: BottomNavigationView
     private lateinit var fragmentLayout: FrameLayout
     private lateinit var addFab: FloatingActionButton
+    private lateinit var fabLayout: LinearLayout
     private lateinit var addExerciseFab: FloatingActionButton
     private lateinit var addFoodFab: FloatingActionButton
     private val rotateOpenAnim: Animation by lazy {
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         fragmentLayout = findViewById(R.id.activity_main_fragment_layout)
         navigationBar.selectedItemId = R.id.menu_main_bottom_home
         navigationBar.setOnItemSelectedListener(this)
+        fabLayout = findViewById(R.id.activity_main_fab_layout)
         addFab = findViewById(R.id.activity_main_fab_add)
         addFab.setOnClickListener(this)
         addFoodFab = findViewById(R.id.activity_main_fab_food)
@@ -109,11 +112,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
 
     private fun setButtonsVisibility(clicked: Boolean) {
         if (!clicked) {
-            addExerciseFab.visibility = View.VISIBLE
-            addFoodFab.visibility = View.VISIBLE
+            fabLayout.visibility = View.VISIBLE
         } else {
-            addExerciseFab.visibility = View.INVISIBLE
-            addFoodFab.visibility = View.INVISIBLE
+            fabLayout.visibility = View.GONE
         }
     }
 

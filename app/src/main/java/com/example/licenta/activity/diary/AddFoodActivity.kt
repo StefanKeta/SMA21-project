@@ -22,6 +22,8 @@ import com.example.licenta.contract.FoodInfoContract
 import com.example.licenta.contract.RegisterFoodContract
 import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.model.food.Food
+import com.example.licenta.model.food.SelectedFood
+import com.example.licenta.util.Date
 import com.example.licenta.util.IntentConstants
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -33,20 +35,17 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     private lateinit var searchFoodET: TextInputEditText
     private lateinit var barcodeBtn: Button
     private lateinit var addCustomFoodBtn: Button
+    private var date: String = Date.setCurrentDay()
     private lateinit var foodRV: RecyclerView
     private lateinit var adapter: AddFoodAdapter
-    private val barcodeScannerActivityResult = registerForActivityResult(
-        BarcodeScannerContract()
-    ) { extras ->
-        if (extras != null)
-            handleResponseFromCamera(extras)
-    }
-    private lateinit var foodInfoActivityResult: ActivityResultLauncher<String>
+    private lateinit var barcodeScannerActivityResult : ActivityResultLauncher<Unit>
+    private lateinit var foodInfoActivityResult: ActivityResultLauncher<Bundle>
     private lateinit var registerFoodActivityResult: ActivityResultLauncher<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
         initComponents()
+        initContracts()
     }
 
     private fun initComponents() {
@@ -57,8 +56,42 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         addCustomFoodBtn = findViewById(R.id.activity_add_food_add_btn)
         addCustomFoodBtn.setOnClickListener(this)
         searchFoodET.addTextChangedListener(setTextWatcher())
+        date = intent.getStringExtra(SelectedFood.DATE_SELECTED)?:Date.setCurrentDay()
         foodRV = findViewById(R.id.activity_add_food_rv)
         setInitialFoods()
+    }
+
+    private fun initContracts(){
+        registerFoodActivityResult =
+            registerForActivityResult(RegisterFoodContract()
+            ) { isAdded ->
+                if (isAdded)
+                    setInitialFoods()
+            }
+
+        foodInfoActivityResult = registerForActivityResult(
+            FoodInfoContract()
+        ){ isAdded ->
+            handleResponseFromFoodInfoActivity(isAdded)
+        }
+
+        barcodeScannerActivityResult = registerForActivityResult(
+            BarcodeScannerContract()
+        ) { extras ->
+            if (extras != null)
+                handleResponseFromCamera(extras)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.activity_add_food_barcode_btn -> openCameraToScan()
+            R.id.activity_add_food_add_btn -> launchRegisterFoodActivity()
+        }
+    }
+
+    override fun onAdapterItemClick(food: Food) {
+        launchFoodInfoActivity(food.id)
     }
 
     private fun setTextWatcher(): TextWatcher {
@@ -87,17 +120,6 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         setUpRecyclerView(limit)
     }
 
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.activity_add_food_barcode_btn -> openCameraToScan()
-            R.id.activity_add_food_add_btn -> registerFoodActivityResult.launch("")
-        }
-    }
-
-    override fun onAdapterItemClick(food: Food) {
-        launchFoodInfoActivity(food.id)
-    }
-
     private fun openCameraToScan() {
         barcodeScannerActivityResult.launch(Unit)
     }
@@ -111,37 +133,27 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
     private fun handleResponseFromCamera(extras: Bundle) {
         val foodExists = extras.getBoolean(IntentConstants.EXISTS)
         if (foodExists) {
-            if(extras.getString(Food.ID)!=null) {
+            if (extras.getString(Food.ID) != null) {
                 val id = extras.getString(Food.ID)
-                foodInfoActivityResult = registerForActivityResult(
-                    FoodInfoContract()
-                ) { isSaved ->
-                    handleResponseFromFoodInfoActivity(isSaved)
-                }
-                foodInfoActivityResult.launch(id)
+                launchFoodInfoActivity(id!!)
             }
         } else {
-            if(extras.getString(Food.BARCODE)!=null) {
+            if (extras.getString(Food.BARCODE) != null) {
                 val foodBarcode = extras.getString(Food.BARCODE)
-                registerFoodActivityResult =
-                    registerForActivityResult(RegisterFoodContract()) { isAdded ->
-                        if (isAdded)
-                            setInitialFoods()
-                    }
-                registerFoodActivityResult.launch(foodBarcode)
+                Log.d("scanBarcodeResponse", "initContracts: $foodBarcode")
+                launchRegisterFoodActivity(foodBarcode!!)
             }
         }
     }
 
-    private fun handleResponseFromFoodInfoActivity(isSaved:Boolean) {
-        if(isSaved){
-            val intent = Intent(this@AddFoodActivity,MainActivity::class.java)
-            intent.putExtra(IntentConstants.IS_SELECTED_FOOD_SAVED,true)
-            setResult(RESULT_OK,intent)
-        }else{
-            Toast
-                .makeText(this@AddFoodActivity, "Could not add it to your diary, try again.",Toast.LENGTH_SHORT)
-                .show()
+    private fun handleResponseFromFoodInfoActivity(isSaved: Boolean) {
+        val intent = Intent(this@AddFoodActivity, MainActivity::class.java)
+        if (isSaved) {
+            intent.putExtra(IntentConstants.IS_SELECTED_FOOD_SAVED, true)
+            setResult(RESULT_OK, intent)
+            finish()
+        } else {
+            intent.putExtra(IntentConstants.IS_SELECTED_FOOD_SAVED, false)
         }
     }
 
@@ -153,9 +165,17 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         foodRV.adapter = adapter
     }
 
-    private fun launchFoodInfoActivity(foodId: String) {
-        foodInfoActivityResult.launch(foodId)
+    private fun launchFoodInfoActivity(foodID: String) {
+        val bundle = Bundle()
+        bundle.putString(Food.ID,foodID)
+        bundle.putString(SelectedFood.DATE_SELECTED,date)
+        foodInfoActivityResult.launch(bundle)
     }
+
+    private fun launchRegisterFoodActivity(barcode:String=""){
+        registerFoodActivityResult.launch(barcode)
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -168,5 +188,4 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         super.onDestroy()
         adapter.stopListening()
     }
-
 }

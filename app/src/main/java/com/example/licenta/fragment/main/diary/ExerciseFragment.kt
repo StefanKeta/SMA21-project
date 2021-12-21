@@ -13,6 +13,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.activity.diary.AddExerciseActivity
+import com.example.licenta.fragment.main.OnDateChangedListener
+import com.example.licenta.util.Date
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +27,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ExerciseFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ExerciseFragment : Fragment(), View.OnClickListener {
+class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragment(), View.OnClickListener, OnDateChangedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -88,5 +91,9 @@ class ExerciseFragment : Fragment(), View.OnClickListener {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun changeDate(date: String) {
+        TODO("Not yet implemented")
     }
 }

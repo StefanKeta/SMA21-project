@@ -1,6 +1,7 @@
 package com.example.licenta.model.food
 
 import com.example.licenta.util.Date
+import java.time.LocalDate
 
 data class SelectedFood(
     val id : String = "",
@@ -8,14 +9,14 @@ data class SelectedFood(
     val userId:String ="",
     val quantity:Double = 0.0,
     val unit: FoodMeasureUnitEnum = FoodMeasureUnitEnum.GRAM,
-    val dateSelected:Long = Date.today()
+    val dateSelected:String = Date.setCurrentDay()
 ){
     companion object{
         const val ID = "id"
-        const val FOOD_ID = "food_id"
-        const val USER_ID = "user_id"
+        const val FOOD_ID = "foodId"
+        const val USER_ID = "userId"
         const val QUANTITY = "quantity"
         const val UNIT = "unit"
-        const val DATE_SELECTED = "date_selected"
+        const val DATE_SELECTED = "dateSelected"
     }
 }

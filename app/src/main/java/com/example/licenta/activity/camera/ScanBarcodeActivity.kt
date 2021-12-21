@@ -119,6 +119,7 @@ class ScanBarcodeActivity : AppCompatActivity() {
                 intent.putExtra(IntentConstants.BUNDLE,bundle)
                 setResult(RESULT_OK,intent)
             } else {
+                Log.d("foodExists", "scanningCallback: $barcode")
                 bundle.putString(Food.BARCODE, barcode)
                 bundle.putBoolean(IntentConstants.EXISTS, false)
                 Log.d("foodExists", "here false!")
