@@ -84,4 +84,6 @@
     <string name="activity_login_checking_your_credentials_tv">Checking your credentials...</string>
     <string name="unit_g">g</string>
     <string name="activity_food_info_100_grams">100</string>
+    <string name="unit_km">km</string>
+    <string name="unit_mi">mi</string>
 </resources>

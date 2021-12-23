@@ -117,7 +117,8 @@ class FoodInfoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveSelectedFood(quantity: Double, measureUnit: FoodMeasureUnitEnum) {
-        val date = intent.getStringExtra(SelectedFood.DATE_SELECTED)?:Date.setCurrentDay()
+        val bundle = intent.getBundleExtra(IntentConstants.BUNDLE)?:Bundle()
+        val date = bundle.getString(SelectedFood.DATE_SELECTED)?:Date.setCurrentDay()
         val selectedFood = SelectedFood(
             UUID.randomUUID().toString(),
             food.id,

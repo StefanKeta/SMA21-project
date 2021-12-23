@@ -16,9 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.adapter.FoodAdapter
 import com.example.licenta.contract.AddedFoodForUserContract
+import com.example.licenta.data.LoggedUserGoals
+import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.firebase.db.SelectedFoodDB
 import com.example.licenta.fragment.main.OnDateChangedListener
+import com.example.licenta.model.food.Food
+import com.example.licenta.model.food.SelectedFood
 import com.example.licenta.util.Date
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.progressindicator.LinearProgressIndicator
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,17 +36,18 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FoodFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FoodFragment(private var date:String = Date.setCurrentDay()) : Fragment(), View.OnClickListener,OnDateChangedListener {
+class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment(),
+    View.OnClickListener, OnDateChangedListener {
     private lateinit var addFoodBtn: Button
     private lateinit var remainingProteinTV: TextView
-    private lateinit var proteinPB: ProgressBar
+    private lateinit var proteinPB: LinearProgressIndicator
     private lateinit var remainingCarbsTV: TextView
-    private lateinit var carbsPB: ProgressBar
+    private lateinit var carbsPB: LinearProgressIndicator
     private lateinit var remainingFatTV: TextView
-    private lateinit var fatPB: ProgressBar
+    private lateinit var fatPB: LinearProgressIndicator
     private lateinit var remainingCaloriesTV: TextView
-    private lateinit var caloriesPB: ProgressBar
-    private lateinit var foodRV : RecyclerView
+    private lateinit var caloriesPB: CircularProgressIndicator
+    private lateinit var foodRV: RecyclerView
     private lateinit var foodAdapter: FoodAdapter
     private lateinit var addFoodForUserContract: ActivityResultLauncher<String>
     override fun onCreateView(
@@ -51,21 +58,16 @@ class FoodFragment(private var date:String = Date.setCurrentDay()) : Fragment(),
         initComponents(view)
         return view
     }
+
     private fun initComponents(view: View) {
         addFoodBtn = view.findViewById(R.id.fragment_diary_food_add_food_btn)
         addFoodBtn.setOnClickListener(this)
-        remainingProteinTV = view.findViewById(R.id.fragment_diary_food_protein_remaining_tv)
-        proteinPB = view.findViewById(R.id.fragment_diary_food_progress_bar_protein)
-        remainingCarbsTV = view.findViewById(R.id.fragment_diary_food_carbs_remaining_tv)
-        carbsPB = view.findViewById(R.id.fragment_diary_food_progress_bar_carbs)
-        remainingFatTV = view.findViewById(R.id.fragment_diary_food_fat_remaining_tv)
-        fatPB = view.findViewById(R.id.fragment_diary_food_progress_bar_fat)
-        remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
+        setUpProgressBars(view)
         setUpRecyclerView(view)
-        addFoodForUserContract = registerForActivityResult(AddedFoodForUserContract()){ isSaved ->
-            if(isSaved)
+        addFoodForUserContract = registerForActivityResult(AddedFoodForUserContract()) { isSaved ->
+            if (isSaved)
                 foodAdapter.notifyDataSetChanged()
-            else{
+            else {
                 Toast.makeText(context, "Could not add to foods!", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -73,24 +75,67 @@ class FoodFragment(private var date:String = Date.setCurrentDay()) : Fragment(),
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.fragment_diary_food_add_food_btn -> goToAddFoodActivity()
         }
     }
 
-    private fun goToAddFoodActivity(){
-        addFoodForUserContract.launch(date)
+    private fun setUpProgressBars(view: View) {
+        remainingProteinTV = view.findViewById(R.id.fragment_diary_food_protein_remaining_tv)
+        proteinPB = view.findViewById(R.id.fragment_diary_food_progress_bar_protein)
+        proteinPB.max = LoggedUserGoals.getGoals().protein
+        remainingCarbsTV = view.findViewById(R.id.fragment_diary_food_carbs_remaining_tv)
+        carbsPB = view.findViewById(R.id.fragment_diary_food_progress_bar_carbs)
+        carbsPB.max = LoggedUserGoals.getGoals().carbs
+        remainingFatTV = view.findViewById(R.id.fragment_diary_food_fat_remaining_tv)
+        fatPB = view.findViewById(R.id.fragment_diary_food_progress_bar_fat)
+        fatPB.max = LoggedUserGoals.getGoals().fat
+        remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
+        caloriesPB = view.findViewById(R.id.fragment_diary_food_calories_remaining_pb)
+        caloriesPB.max = LoggedUserGoals.getGoals().calories
+        SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
     }
 
-    private fun setUpRecyclerView(view: View){
+    private fun setUpRecyclerView(view: View) {
         foodRV = view.findViewById(R.id.fragment_diary_food_rv)
         foodRV.layoutManager = LinearLayoutManager(context)
         foodRV.hasFixedSize()
         foodRV.itemAnimator = null
-        foodAdapter = FoodAdapter(context!!,SelectedFoodDB.getSelectedFoodsOption(date))
+        foodAdapter = FoodAdapter(context!!, SelectedFoodDB.getSelectedFoodsOption(date))
         foodRV.adapter = foodAdapter
     }
 
+    private fun updateMacrosAndCalories(selectedFoods: List<SelectedFood>) {
+        proteinPB.progress = 0
+        carbsPB.progress = 0
+        fatPB.progress = 0
+        caloriesPB.progress = 0
+        var proteinProgress = 0
+        var carbsProgress = 0
+        var fatProgress = 0
+        var calorieProgress = 0
+        selectedFoods.map { selectedFood ->
+            FoodDB.getFoodById(selectedFood.foodId) { food ->
+                val quantity = selectedFood.quantity
+                proteinProgress += (food.protein * quantity).toInt()
+                carbsProgress += (food.carbs * quantity).toInt()
+                fatProgress += (food.fat * quantity).toInt()
+                calorieProgress += (food.calories * quantity).toInt()
+                proteinPB.progress = proteinProgress
+                carbsPB.progress = carbsProgress
+                fatPB.progress = fatProgress
+                caloriesPB.progress = calorieProgress
+                remainingProteinTV.text = (proteinPB.max - proteinProgress).toString()
+                remainingCarbsTV.text = (carbsPB.max - carbsProgress).toString()
+                remainingFatTV.text = (fatPB.max - fatProgress).toString()
+                remainingCaloriesTV.text = (caloriesPB.max - calorieProgress).toString()
+            }
+        }
+    }
+
+    private fun goToAddFoodActivity() {
+        addFoodForUserContract.launch(date)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -105,8 +150,10 @@ class FoodFragment(private var date:String = Date.setCurrentDay()) : Fragment(),
     override fun changeDate(date: String) {
         this.date = date
         foodAdapter.updateOptions(SelectedFoodDB.getSelectedFoodsOption(date))
+        SelectedFoodDB.getSelectedFoodByDate(date,::updateMacrosAndCalories)
         foodAdapter.notifyDataSetChanged()
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

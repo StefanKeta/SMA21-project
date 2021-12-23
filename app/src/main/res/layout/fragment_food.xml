@@ -48,12 +48,14 @@
                         android:orientation="horizontal">
 
 
-                        <ProgressBar
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
                             android:id="@+id/fragment_diary_food_progress_bar_protein"
                             android:layout_width="0dp"
                             android:layout_weight="3"
                             android:layout_height="wrap_content"
-                            style="?android:attr/progressBarStyleHorizontal"
+                            app:indicatorColor="@android:color/black"
+                            app:trackColor="@android:color/white"
+                            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
                             />
 
                         <TextView
@@ -80,12 +82,14 @@
                         android:weightSum="4"
                         android:orientation="horizontal"
                         >
-                        <ProgressBar
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
                             android:id="@+id/fragment_diary_food_progress_bar_carbs"
                             android:layout_width="0dp"
                             android:layout_weight="3"
                             android:layout_height="wrap_content"
-                            style="?android:attr/progressBarStyleHorizontal"
+                            app:indicatorColor="@android:color/black"
+                            app:trackColor="@android:color/white"
+                            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
                             />
 
                         <TextView
@@ -113,12 +117,15 @@
                         android:orientation="horizontal"
                         >
 
-                        <ProgressBar
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
                             android:id="@+id/fragment_diary_food_progress_bar_fat"
                             android:layout_width="0dp"
                             android:layout_weight="3"
                             android:layout_height="wrap_content"
-                            style="?android:attr/progressBarStyleHorizontal"
+                            android:visibility="visible"
+                            app:indicatorColor="@android:color/black"
+                            app:trackColor="@android:color/white"
+                            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
                             />
 
 
@@ -152,7 +159,21 @@
                         android:maxLines="1"
                         android:gravity="center"
                         android:textSize="@dimen/text_size_list_item_important"
+                        tools:ignore="NestedWeights" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/fragment_diary_food_calories_remaining_pb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:indicatorDirectionCircular="clockwise"
+                        app:trackThickness="4dp"
+                        app:showDelay="100"
+                        app:indicatorColor="@android:color/black"
+                        app:trackColor="@android:color/white"
+                        android:layout_marginTop="@dimen/fragment_food_margin_between"
+                        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
                         />
+
 
                     <TextView
                         android:id="@+id/fragment_diary_food_calories_remaining_tv"
@@ -161,7 +182,7 @@
                         tools:text="2500"
                         android:textSize="@dimen/text_size_titles"
                         android:textStyle="bold"
-                        android:layout_marginTop="@dimen/login_form_fields_margin_between"
+                        android:layout_marginTop="8dp"
                         />
 
 

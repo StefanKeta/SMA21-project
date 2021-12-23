@@ -20,4 +20,8 @@
     <dimen name="activity_add_food_barcode_icon_size">55dp</dimen>
     <dimen name="app_padding_small">8dp</dimen>
     <dimen name="app_padding_medium">16dp</dimen>
+    <dimen name="app_padding_large">32dp</dimen>
+    <dimen name="fragment_food_margin_between">8dp</dimen>
+    <dimen name="app_margin_small">8dp</dimen>
+    <dimen name="app_margin_medium">16dp</dimen>
 </resources>

@@ -11,6 +11,7 @@ import com.firebase.ui.firestore.ObservableSnapshotArray
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
+import java.lang.RuntimeException
 
 object SelectedFoodDB {
     private val db by lazy {
@@ -30,13 +31,35 @@ object SelectedFoodDB {
             }
     }
 
-    fun getSelectedFoodsOption(date:String): FirestoreRecyclerOptions<SelectedFood> {
+    fun getSelectedFoodByDate(date: String, callback: (List<SelectedFood>) -> Unit) {
+        db
+            .collection(CollectionsName.SELECTED_FOOD)
+            .whereEqualTo(SelectedFood.DATE_SELECTED, date)
+            .get()
+            .addOnCompleteListener { result ->
+                if (result.isSuccessful) {
+                    val documents = result.result.documents
+                    val selectedFoods =
+                        documents
+                            .map { documentSnapshot -> documentSnapshot?.toObject(SelectedFood::class.java) }
+                            .map { foodNullable ->
+                                foodNullable
+                                    ?: throw RuntimeException("Could not parse the object!")
+                            }
+                    callback(selectedFoods)
+                } else {
+                    throw RuntimeException("Ooops! Something went wrong!")
+                }
+            }
+    }
+
+    fun getSelectedFoodsOption(date: String): FirestoreRecyclerOptions<SelectedFood> {
         val query = db
             .collection(CollectionsName.SELECTED_FOOD)
-            .whereEqualTo(SelectedFood.DATE_SELECTED,date)
+            .whereEqualTo(SelectedFood.DATE_SELECTED, date)
 
         return FirestoreRecyclerOptions.Builder<SelectedFood>()
-            .setQuery(query,SelectedFood::class.java)
+            .setQuery(query, SelectedFood::class.java)
             .build()
     }
 }
