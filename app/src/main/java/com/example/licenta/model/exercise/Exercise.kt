@@ -1,7 +1,17 @@
 package com.example.licenta.model.exercise
 
-interface Exercise {
-    val id:String
-    val name: String
+import com.google.firebase.firestore.DocumentId
+
+data class Exercise(
+    @DocumentId
+    val id: String,
+    val name: String,
     val group: String
+) {
+
+    companion object {
+        const val ID = "id"
+        const val NAME = "name"
+        const val GROUP = "group"
+    }
 }
