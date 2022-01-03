@@ -24,4 +24,5 @@
     <dimen name="fragment_food_margin_between">8dp</dimen>
     <dimen name="app_margin_small">8dp</dimen>
     <dimen name="app_margin_medium">16dp</dimen>
+    <dimen name="app_margin_large">48dp</dimen>
 </resources>
