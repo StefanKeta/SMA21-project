@@ -86,4 +86,10 @@
     <string name="activity_food_info_100_grams">100</string>
     <string name="unit_km">km</string>
     <string name="unit_mi">mi</string>
+    <string name="hint_exercise_sets">Sets</string>
+    <string name="hint_exercise_reps">Reps</string>
+    <string name="hint_exercise_weight">Weight</string>
+    <string name="exercise_sets">Sets: </string>
+    <string name="exercise_reps">Reps: </string>
+    <string name="exercise_weight">Weight: </string>
 </resources>

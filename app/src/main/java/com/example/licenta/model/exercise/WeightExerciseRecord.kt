@@ -5,11 +5,11 @@ import com.google.firebase.firestore.DocumentId
 
 data class WeightExerciseRecord(
     @DocumentId
-    val id: String,
-    val exerciseId: String,
-    val sets: Int,
-    val reps: Int,
-    val weight: Double,
+    val id: String="",
+    val exerciseId: String="",
+    val sets: Int=0,
+    val reps: Int=0,
+    val weight: Double=0.0,
     val date: String = Date.setCurrentDay()
 ) {
     companion object {

@@ -4,9 +4,9 @@ import com.google.firebase.firestore.DocumentId
 
 data class Exercise(
     @DocumentId
-    val id: String,
-    val name: String,
-    val group: String
+    val id: String = "",
+    val group: String = "",
+    val name: String = "",
 ) {
 
     companion object {

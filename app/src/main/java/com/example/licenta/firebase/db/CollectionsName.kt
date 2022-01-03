@@ -5,6 +5,6 @@ object CollectionsName {
     const val GOALS = "goals"
     const val FOOD  = "food"
     const val SELECTED_FOOD = "selected_food"
-    const val EXERCISE = "exercise"
-    const val WEIGHT_EXERCISE_RECORD = "weight_exercise_record"
+    const val EXERCISES = "exercises"
+    const val WEIGHT_EXERCISE_RECORDS = "weight_exercise_records"
 }

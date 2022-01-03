@@ -48,14 +48,14 @@ object Util {
         return BigDecimal(oz * 28.35).setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
 
-    fun convertGToOZ(g: Double): Double {
+    fun convertGToOz(g: Double): Double {
         return BigDecimal(g / 28.35).setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
 
     fun hideKeyboard(activity: Activity) {
         val inputManager =
             activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (inputManager.isAcceptingText)
+        if (inputManager.isActive)
             inputManager.hideSoftInputFromWindow(
                 activity.currentFocus?.windowToken, 0
             )

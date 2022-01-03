@@ -1,7 +1,6 @@
 package com.example.licenta.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,12 +38,11 @@ class AddFoodAdapter(
 
     inner class AddFoodViewHolder(
         view: View,
-        onAddFoodItemClickListener: OnAddFoodItemClickListener
+        private val onAddFoodItemClickListener: OnAddFoodItemClickListener
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
         private val foodName: TextView = view.findViewById(R.id.add_food_view_holder_food_name_tv)
         private val foodCalories: TextView =
             view.findViewById(R.id.add_food_view_holder_food_kcal_tv)
-        private val onItemClick: OnAddFoodItemClickListener = onAddFoodItemClickListener
 
         init {
             view.setOnClickListener(this)
@@ -57,7 +55,7 @@ class AddFoodAdapter(
 
         override fun onClick(v: View?) {
             val food = snapshots[absoluteAdapterPosition]
-            onItemClick.onAdapterItemClick(food)
+            onAddFoodItemClickListener.onAdapterItemClick(food)
         }
     }
 

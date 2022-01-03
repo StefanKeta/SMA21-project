@@ -9,10 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.activity.diary.AddExerciseActivity
+import com.example.licenta.adapter.ExerciseAdapter
+import com.example.licenta.contract.AddExerciseContract
+import com.example.licenta.firebase.db.WeightExerciseRecordDB
 import com.example.licenta.fragment.main.OnDateChangedListener
 import com.example.licenta.util.Date
 import java.util.*
@@ -27,19 +32,15 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ExerciseFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragment(), View.OnClickListener, OnDateChangedListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragment(),
+    View.OnClickListener, OnDateChangedListener {
     private lateinit var addExerciseBtn: Button
     private lateinit var exercisesRV: RecyclerView
+    private lateinit var adapter : ExerciseAdapter
+    private lateinit var addExerciseContract: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -55,22 +56,52 @@ class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragme
         addExerciseBtn = view.findViewById(R.id.fragment_diary_exercise_add_btn)
         addExerciseBtn.setOnClickListener(this)
         exercisesRV = view.findViewById(R.id.fragment_diary_exercise_rv)
+        exercisesRV.layoutManager = LinearLayoutManager(context!!)
+        exercisesRV.hasFixedSize()
+        exercisesRV.itemAnimator = null
+        setUpAdapter()
+        addExerciseContract = registerForActivityResult(
+            AddExerciseContract(),
+            ::handleResponseFromAddExerciseActivity
+        )
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.fragment_diary_exercise_add_btn -> openAddExerciseActivity()
+            R.id.fragment_diary_exercise_add_btn -> addExerciseContract.launch(date)
         }
     }
 
-    private fun openAddExerciseActivity() {
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                //
-            }
-        }.launch(Intent(context, AddExerciseActivity::class.java))
+    override fun changeDate(date: String) {
+        this.date = date
+        refreshAdapter()
+    }
+
+    private fun handleResponseFromAddExerciseActivity(isAdded: Boolean) {
+        if(isAdded)
+            refreshAdapter()
+    }
+
+    private fun refreshAdapter(){
+        val options = WeightExerciseRecordDB.exerciseAdapterOptions(date)
+        adapter.updateOptions(options)
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun setUpAdapter(){
+        val options = WeightExerciseRecordDB.exerciseAdapterOptions(date)
+        adapter = ExerciseAdapter(context!!,options)
+        exercisesRV.adapter = adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.stopListening()
     }
 
     companion object {
@@ -93,7 +124,4 @@ class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragme
             }
     }
 
-    override fun changeDate(date: String) {
-        TODO("Not yet implemented")
-    }
 }
