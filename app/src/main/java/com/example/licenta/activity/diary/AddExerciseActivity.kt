@@ -17,8 +17,10 @@ import com.example.licenta.activity.MainActivity
 import com.example.licenta.adapter.AddExerciseAdapter
 import com.example.licenta.contract.AddCustomExerciseContract
 import com.example.licenta.firebase.db.ExercisesDB
+import com.example.licenta.firebase.db.PersonalRecordsDB
 import com.example.licenta.firebase.db.WeightExerciseRecordDB
 import com.example.licenta.model.exercise.Exercise
+import com.example.licenta.model.exercise.PersonalRecord
 import com.example.licenta.model.exercise.WeightExerciseRecord
 import com.example.licenta.util.Date
 import com.example.licenta.util.IntentConstants
@@ -39,7 +41,7 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
     private lateinit var exercisesRV: RecyclerView
     private lateinit var exercisesList: MutableList<Exercise>
     private lateinit var groupsSet: MutableSet<String>
-    private lateinit var recordsList: MutableList<Double>
+    private lateinit var recordsList: MutableList<PersonalRecord>
     private lateinit var addCustomExerciseContract: ActivityResultLauncher<Unit>
     private lateinit var setsTIL: TextInputLayout
     private lateinit var setsET: TextInputEditText
@@ -69,6 +71,7 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
             AddCustomExerciseContract(),
             ::handleResponseFromAddingCustomExercise
         )
+        PersonalRecordsDB.getAllRecords { recordsList = it }
         ExercisesDB.getAllExercises(::initGroups)
     }
 
@@ -126,7 +129,7 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
     }
 
     private fun populateExercises(exercises: MutableList<Exercise>) {
-        val adapter = AddExerciseAdapter(this, exercises, this)
+        val adapter = AddExerciseAdapter(this, this, exercises, recordsList)
         exercisesRV.adapter = adapter
     }
 
@@ -153,7 +156,7 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
     private fun openAddDialog(exerciseId: String) {
         val view = LayoutInflater
             .from(this@AddExerciseActivity)
-            .inflate(R.layout.dialog_add_exercise,null,false)
+            .inflate(R.layout.dialog_add_exercise, null, false)
         setsTIL = view.findViewById(R.id.dialog_add_exercise_sets_til)
         setsET = view.findViewById(R.id.dialog_add_exercise_sets_et)
         repsTIL = view.findViewById(R.id.dialog_add_exercise_reps_til)
@@ -167,8 +170,9 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
                 R.string.activity_register_food_cancel_btn
             ) { dialog, _ -> dialog!!.dismiss() }
             .setPositiveButton(R.string.activity_register_food_save_btn) { dialog, _ ->
-                if (dialogInputsFilled())
+                if (dialogInputsFilled()) {
                     registerExerciseToDB(dialog, exerciseId)
+                }
             }
             .create()
 
@@ -198,7 +202,6 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
             weightET.text.toString().toDouble(),
             date
         )
-
         WeightExerciseRecordDB.saveRecord(weightExerciseRecord) { isAdded ->
             dialog.dismiss()
             if (!isAdded) {
@@ -208,9 +211,13 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                val intent = Intent(this@AddExerciseActivity,MainActivity::class.java)
-                    .also { it.putExtra(IntentConstants.IS_EXERCISE_ADDED,isAdded) }
-                setResult(RESULT_OK,intent)
+                val intent = Intent(this@AddExerciseActivity, MainActivity::class.java)
+                    .also {
+                        it.putExtra(IntentConstants.IS_EXERCISE_ADDED, isAdded)
+                        val weight = weightET.text.toString().toDouble()
+                        PersonalRecordsDB.checkAndUpdateRecordIfNeeded(exerciseId, weight)
+                    }
+                setResult(RESULT_OK, intent)
                 finish()
             }
         }

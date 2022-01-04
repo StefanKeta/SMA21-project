@@ -64,6 +64,7 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         addFoodBtn.setOnClickListener(this)
         setUpProgressBars(view)
         setUpRecyclerView(view)
+        Log.d("here", "updateMacrosAndCalories: init")
         addFoodForUserContract = registerForActivityResult(AddedFoodForUserContract()) { isSaved ->
             if (isSaved)
                 foodAdapter.notifyDataSetChanged()
@@ -93,6 +94,7 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
         caloriesPB = view.findViewById(R.id.fragment_diary_food_calories_remaining_pb)
         caloriesPB.max = LoggedUserGoals.getGoals().calories
+        Log.d("here", "updateMacrosAndCalories: setUpProgress")
         SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
     }
 
@@ -106,10 +108,15 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
     }
 
     private fun updateMacrosAndCalories(selectedFoods: List<SelectedFood>) {
+        Log.d("here", "updateMacrosAndCalories: update")
         proteinPB.progress = 0
         carbsPB.progress = 0
         fatPB.progress = 0
         caloriesPB.progress = 0
+        remainingProteinTV.text = proteinPB.max.toString()
+        remainingCarbsTV.text = carbsPB.max.toString()
+        remainingFatTV.text = fatPB.max.toString()
+        remainingCaloriesTV.text = caloriesPB.max.toString()
         var proteinProgress = 0
         var carbsProgress = 0
         var fatProgress = 0

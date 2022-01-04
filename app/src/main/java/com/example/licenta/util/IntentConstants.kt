@@ -6,7 +6,5 @@ object IntentConstants {
     const val IS_FOOD_SAVED = "food_saved"
     const val IS_SELECTED_FOOD_SAVED = "selected_food_saved"
     const val IS_EXERCISE_ADDED = "exercise_added"
-    const val EXERCISE_ADDING_TYPE = "type"
-    const val ADD_CUSTOM_GROUP_CODE = 1
-    const val ADD_CUSTOM_EXERCISE_CODE = 2
+    const val IS_RECORD = "is_record"
 }

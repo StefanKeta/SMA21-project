@@ -7,4 +7,5 @@ object CollectionsName {
     const val SELECTED_FOOD = "selected_food"
     const val EXERCISES = "exercises"
     const val WEIGHT_EXERCISE_RECORDS = "weight_exercise_records"
+    const val PERSONAL_RECORDS = "personal_records"
 }

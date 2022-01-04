@@ -9,11 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.model.exercise.Exercise
+import com.example.licenta.model.exercise.PersonalRecord
 
 class AddExerciseAdapter(
     private val context: Context,
+    private val onExerciseItemClickListener: OnExerciseItemClickListener,
     private val exercisesList: MutableList<Exercise>,
-    private val onExerciseItemClickListener: OnExerciseItemClickListener
+    private val recordsList: MutableList<PersonalRecord>
 ) : RecyclerView.Adapter<AddExerciseAdapter.ExercisesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExercisesViewHolder {
@@ -50,11 +52,15 @@ class AddExerciseAdapter(
         }
 
         fun update(position: Int) {
+            val record = recordsList
+                .find {personalRecord ->
+                    personalRecord.exerciseId == exercisesList[position].id}
+                ?.record ?: 0.0
             nameTV.text = exercisesList[position].name
+            recordTV.text = record.toString()
         }
 
         override fun onClick(view: View?) {
-            Log.d("addExercise", "onExerciseItemClick: $context")
             val id = exercisesList[absoluteAdapterPosition].id
             onExerciseItemClickListener.onExerciseItemClick(id)
         }

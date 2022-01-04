@@ -1,6 +1,7 @@
 package com.example.licenta.adapter
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.firebase.db.ExercisesDB
+import com.example.licenta.firebase.db.PersonalRecordsDB
 import com.example.licenta.model.exercise.WeightExerciseRecord
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -37,7 +39,7 @@ class ExerciseAdapter(
         holder.update(model)
     }
 
-    inner class ExerciseRecordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ExerciseRecordViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private var nameTV: TextView = view.findViewById(R.id.item_exercise_record_name_tv)
         private var groupTV: TextView = view.findViewById(R.id.item_exercise_record_group_tv)
         private var setsTV: TextView = view.findViewById(R.id.item_exercise_record_sets_tv)
@@ -51,6 +53,12 @@ class ExerciseAdapter(
                 setsTV.text = weightExerciseRecord.sets.toString()
                 repsTV.text = weightExerciseRecord.reps.toString()
                 weightTV.text = weightExerciseRecord.weight.toString()
+                PersonalRecordsDB.checkIfRecord(exercise.id,weightExerciseRecord.weight){ isRecord ->
+                    if(isRecord)
+                        weightTV.setTextColor(view.resources.getColor(R.color.teal_700))
+                    else
+                        weightTV.setTextColor(view.resources.getColor(R.color.black))
+                }
             }
         }
     }
