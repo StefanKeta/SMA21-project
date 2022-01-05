@@ -17,10 +17,10 @@ import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.model.food.Food
 import com.example.licenta.util.IntentConstants
 import com.example.licenta.util.PermissionsChecker
-import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.android.synthetic.main.activity_scan_barcode.*
 import java.util.concurrent.ExecutorService

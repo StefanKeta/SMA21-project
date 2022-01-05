@@ -17,9 +17,8 @@ import com.example.licenta.data.LoggedUserData
 import com.example.licenta.firebase.db.UsersDB
 import com.example.licenta.fragment.main.DiaryFragment
 import com.example.licenta.fragment.main.HomeFragment
+import com.example.licenta.fragment.main.MapsFragment
 import com.example.licenta.fragment.main.ProfileFragment
-import com.example.licenta.fragment.main.SearchFragment
-import com.example.licenta.model.user.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
@@ -73,11 +72,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_main_bottom_home -> switchFragments(HomeFragment())
-            R.id.menu_main_bottom_search -> switchFragments(SearchFragment())
+            R.id.menu_main_bottom_location -> switchFragments(MapsFragment())
             R.id.menu_main_bottom_diary -> switchFragments(DiaryFragment())
             R.id.menu_main_bottom_profile -> switchFragments(ProfileFragment())
-
-
         }
         return true
     }
