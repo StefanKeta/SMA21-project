@@ -1,8 +1,6 @@
 package com.example.licenta.fragment.main
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +13,6 @@ import com.example.licenta.fragment.main.profile.ConnectionsFragment
 import com.example.licenta.fragment.main.profile.GoalsFragment
 import com.example.licenta.fragment.main.profile.PostsFragment
 import com.example.licenta.fragment.main.profile.RecordsFragment
-import com.google.android.material.tabs.TabItem
 import com.google.android.material.tabs.TabLayout
 
 // TODO: Rename parameter arguments, choose names that match
@@ -48,8 +45,10 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
 
     private fun switchFragment(fragment: Fragment) {
-        Toast.makeText(context, "Welcome to ${fragment.javaClass}", Toast.LENGTH_SHORT)
-            .show()
+        val fragmentManager = childFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_profile_items_fragment, fragment)
+        fragmentTransaction.commit()
     }
 
     override fun onCreateView(

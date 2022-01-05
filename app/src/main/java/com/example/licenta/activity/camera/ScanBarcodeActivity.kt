@@ -108,21 +108,17 @@ class ScanBarcodeActivity : AppCompatActivity() {
     }
 
     private fun scanningCallback(barcode: String) {
-        Log.d("foodExists", "Scanning callback...")
         FoodDB.foodExists(barcode) { exists: Boolean, id: String ->
             val intent = Intent(this@ScanBarcodeActivity, AddFoodActivity::class.java)
             val bundle = Bundle()
             if (exists) {
                 bundle.putString(Food.ID, id)
                 bundle.putBoolean(IntentConstants.EXISTS, true)
-                Log.d("foodExists", "here true!")
                 intent.putExtra(IntentConstants.BUNDLE,bundle)
                 setResult(RESULT_OK,intent)
             } else {
-                Log.d("foodExists", "scanningCallback: $barcode")
                 bundle.putString(Food.BARCODE, barcode)
                 bundle.putBoolean(IntentConstants.EXISTS, false)
-                Log.d("foodExists", "here false!")
                 intent.putExtra(IntentConstants.BUNDLE,bundle)
                 setResult(RESULT_OK,intent)
             }
@@ -147,7 +143,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
                     .addOnSuccessListener { barcodeList ->
                         if(barcodeList.size == 1){
                             val barcodeRawValue = barcodeList[0].rawValue ?: ""
-                            Log.d("barcodeRawValue", "processImageProxy: $barcodeRawValue")
                             scanningCallback(barcodeRawValue)
                             imageProxy.image?.close()
                             imageProxy.close()

@@ -2,7 +2,6 @@ package com.example.licenta.activity.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.licenta.R
@@ -111,7 +110,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                     Util.convertFeetInchesToCm(feetInches[0].toInt())
                 else
                     Util.convertFeetInchesToCm(feetInches[0].toInt(), feetInches[1].toInt())
-                Log.d("heightET", "heightButtonClicked: $height")
                 heightET.setText(height.toString())
             }
         } else {
@@ -252,10 +250,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun isHeightValid(): Boolean {
-        Log.d(
-            "getSelection",
-            "isHeight ${heightCmBtn.isEnabled} ${heightCmBtn.isActivated} ${heightCmBtn.isPressed} ${weightLbsBtn.isActivated} ${weightLbsBtn.isEnabled} ${weightLbsBtn.isPressed}"
-        )
         if (heightCmBtn.isEnabled) {
             val height = if (heightET.text.isNotEmpty()) heightET.text.toString().toInt() else 0
             return checkIfTooSmallOrTooTall(height)

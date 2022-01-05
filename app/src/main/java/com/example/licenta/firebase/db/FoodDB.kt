@@ -1,9 +1,7 @@
 package com.example.licenta.firebase.db
 
-import android.util.Log
 import com.example.licenta.model.food.Food
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.lang.RuntimeException
@@ -86,17 +84,14 @@ object FoodDB {
             .whereEqualTo(Food.BARCODE, barcodeRawValue)
             .get()
             .addOnCompleteListener { snapshotResult ->
-                Log.d("foodExists", "Searching...")
                 if (snapshotResult.isSuccessful) {
                     val documents = snapshotResult.result.documents
                     if (documents.isEmpty()) {
                         existsCallback(false, "")
-                        Log.d("foodExists", "Empty...")
                     } else {
                         val foodID = documents[0]
                             .toObject(Food::class.java)
                             ?.id ?: ""
-                        Log.d("foodExists", "$foodID")
                         existsCallback(true, foodID)
                     }
                 } else {

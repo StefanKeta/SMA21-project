@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true"
     tools:context=".fragment.main.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -13,7 +12,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <LinearLayout
                 android:id="@+id/fragment_profile_linear_layout_info"
                 app:layout_insetEdge="bottom"
@@ -103,6 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/activity_main_padding_bottom_fragments"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

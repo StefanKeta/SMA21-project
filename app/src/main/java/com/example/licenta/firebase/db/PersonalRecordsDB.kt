@@ -1,6 +1,7 @@
 package com.example.licenta.firebase.db
 
 import android.util.Log
+import com.example.licenta.data.LoggedUserData
 import com.example.licenta.model.exercise.PersonalRecord
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.RuntimeException
@@ -15,6 +16,7 @@ object PersonalRecordsDB {
     fun getAllRecords(callback: (MutableList<PersonalRecord>) -> Unit) {
         db
             .collection(CollectionsName.PERSONAL_RECORDS)
+            .whereEqualTo(PersonalRecord.USER_ID, LoggedUserData.getLoggedUser().uuid)
             .get()
             .addOnCompleteListener { snapshot ->
                 if (snapshot.isSuccessful) {
@@ -23,8 +25,9 @@ object PersonalRecordsDB {
                     for (document in documents)
                         document.toObject(PersonalRecord::class.java)
                             .also {
-                                if (it != null)
+                                if (it != null) {
                                     records.add(it)
+                                }
                                 else
                                     throw RuntimeException("Oops! Could not parse personal record document to an object!")
                             }
@@ -37,6 +40,7 @@ object PersonalRecordsDB {
         db
             .collection(CollectionsName.PERSONAL_RECORDS)
             .whereEqualTo(PersonalRecord.EXERCISE_ID, exerciseId)
+            .whereEqualTo(PersonalRecord.USER_ID,LoggedUserData.getLoggedUser().uuid)
             .get()
             .addOnCompleteListener { snapshot ->
                 val documents = snapshot.result.documents
@@ -64,6 +68,7 @@ object PersonalRecordsDB {
         db
             .collection(CollectionsName.PERSONAL_RECORDS)
             .whereEqualTo(PersonalRecord.EXERCISE_ID, exerciseId)
+            .whereEqualTo(PersonalRecord.USER_ID,LoggedUserData.getLoggedUser().uuid)
             .get()
             .addOnCompleteListener { snapshot ->
                 if (snapshot.isSuccessful) {
@@ -74,8 +79,6 @@ object PersonalRecordsDB {
                                 val record = it.toObject(PersonalRecord::class.java)
                                 if (record != null) {
                                     val weightRecord = record.record
-                                    Log.d("weightRecord", "checkAndUpdateRecordIfNeeded: $weightRecord")
-                                    Log.d("weightRecord", "checkAndUpdateRecordIfNeeded: $weight weight")
                                     if (weightRecord < weight) {
                                         updateRecord(record.id, weight)
                                     }
@@ -104,6 +107,7 @@ object PersonalRecordsDB {
         val record = PersonalRecord(
             UUID.randomUUID().toString(),
             exerciseId,
+            LoggedUserData.getLoggedUser().uuid,
             weight
         )
         db

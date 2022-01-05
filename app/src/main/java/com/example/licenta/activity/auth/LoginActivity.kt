@@ -3,7 +3,6 @@ package com.example.licenta.activity.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -13,18 +12,14 @@ import com.example.licenta.R
 import com.example.licenta.activity.MainActivity
 import com.example.licenta.activity.SetGoalsActivity
 import com.example.licenta.data.LoggedUserData
-import com.example.licenta.data.LoggedUserGoals
 import com.example.licenta.firebase.Auth
 import com.example.licenta.firebase.db.GoalsDB
 import com.example.licenta.firebase.db.UsersDB
-import com.example.licenta.model.user.Goals
 import com.example.licenta.model.user.User
 import com.example.licenta.util.Util
 import com.google.android.material.textfield.TextInputLayout
 import java.lang.RuntimeException
 import java.util.*
-import java.util.function.Supplier
-import kotlin.NoSuchElementException
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var emailLayout: TextInputLayout

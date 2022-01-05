@@ -1,16 +1,8 @@
 package com.example.licenta.firebase.db
 
-import android.util.Log
-import com.example.licenta.firebase.Auth
-import com.example.licenta.model.food.Food
 import com.example.licenta.model.food.SelectedFood
-import com.example.licenta.util.Date
-import com.example.licenta.util.IntentConstants
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.firebase.ui.firestore.ObservableSnapshotArray
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.Query
 import java.lang.RuntimeException
 
 object SelectedFoodDB {

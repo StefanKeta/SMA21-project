@@ -5,11 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -102,7 +99,6 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
                     val searchQuery = s.toString()
-                    Log.d("searchQuery", "onTextChanged: $searchQuery")
                     displayFoods(searchQuery)
                 }
             }
@@ -140,7 +136,6 @@ class AddFoodActivity : AppCompatActivity(), View.OnClickListener,
         } else {
             if (extras.getString(Food.BARCODE) != null) {
                 val foodBarcode = extras.getString(Food.BARCODE)
-                Log.d("scanBarcodeResponse", "initContracts: $foodBarcode")
                 launchRegisterFoodActivity(foodBarcode!!)
             }
         }

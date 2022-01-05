@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -101,7 +100,6 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
     }
 
     override fun onExerciseItemClick(exerciseId: String) {
-        Log.d("addExercise", "onExerciseItemClick: $this")
         openAddDialog(exerciseId)
     }
 
@@ -116,7 +114,6 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
                 exercise
                     .group
             }
-            .distinct()
             .collect(Collectors.toSet())
             .toMutableSet()
 

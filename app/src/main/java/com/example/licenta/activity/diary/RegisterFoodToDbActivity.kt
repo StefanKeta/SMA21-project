@@ -3,14 +3,12 @@ package com.example.licenta.activity.diary
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import com.example.licenta.R
 import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.model.food.Food
-import com.example.licenta.util.Date
 import com.example.licenta.util.IntentConstants
 import com.example.licenta.util.Util
 import com.google.android.material.textfield.TextInputEditText
@@ -83,7 +81,6 @@ class RegisterFoodToDbActivity : AppCompatActivity(), View.OnClickListener {
                         fatET.text.toString().trim().toInt()
                 )
                 FoodDB.saveFood(food) { isSaved ->
-                    Log.d("registerFood", "barcode: $barcode")
                     intent.putExtra(IntentConstants.IS_FOOD_SAVED, isSaved)
                 }
             }
