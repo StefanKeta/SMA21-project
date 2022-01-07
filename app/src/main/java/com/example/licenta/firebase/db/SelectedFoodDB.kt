@@ -1,5 +1,6 @@
 package com.example.licenta.firebase.db
 
+import com.example.licenta.model.food.FoodMeasureUnitEnum
 import com.example.licenta.model.food.SelectedFood
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
@@ -53,5 +54,36 @@ object SelectedFoodDB {
         return FirestoreRecyclerOptions.Builder<SelectedFood>()
             .setQuery(query, SelectedFood::class.java)
             .build()
+    }
+
+    fun removeSelectedFood(id:String,callback: (Boolean) -> Unit){
+        db
+            .collection(CollectionsName.SELECTED_FOOD)
+            .document(id)
+            .delete()
+            .addOnCompleteListener { result ->
+                if(result.isSuccessful){
+                    callback(true)
+                }else{
+                    callback(false)
+                }
+            }
+    }
+
+    fun updateSelectedFood(id:String,quantity:Double,unit:FoodMeasureUnitEnum,callback: (Boolean) -> Unit){
+        db
+            .collection(CollectionsName.SELECTED_FOOD)
+            .document(id)
+            .update(
+                SelectedFood.QUANTITY,quantity,
+                SelectedFood.UNIT,unit
+            )
+            .addOnCompleteListener { result ->
+                if(result.isSuccessful){
+                    callback(true)
+                }else{
+                    callback(false)
+                }
+            }
     }
 }

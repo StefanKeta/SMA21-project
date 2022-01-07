@@ -15,7 +15,9 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
 class FoodAdapter(
     private val ctx: Context,
-    optionsQuery: FirestoreRecyclerOptions<SelectedFood>
+    optionsQuery: FirestoreRecyclerOptions<SelectedFood>,
+    private val onSelectedFoodLongClickListener: OnSelectedFoodLongClickListener,
+    private val onSelectedFoodClickListener: OnSelectedFoodClickListener
 ) : FirestoreRecyclerAdapter<SelectedFood, FoodAdapter.FoodHolder>(optionsQuery) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodHolder {
@@ -26,7 +28,9 @@ class FoodAdapter(
                     R.layout.meal_food_item_holder,
                     parent,
                     false
-                )
+                ),
+            onSelectedFoodLongClickListener,
+            onSelectedFoodClickListener
         )
     }
 
@@ -34,19 +38,39 @@ class FoodAdapter(
         holder.update(selectedFood)
     }
 
-    inner class FoodHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private var nameTV:TextView = view.findViewById(R.id.meal_food_item_holder_food_name_tv)
-        private var quantityTV:TextView = view.findViewById(R.id.meal_food_item_holder_quantity_tv)
-        private var unitTV:TextView = view.findViewById(R.id.meal_food_item_holder_weight_unit_tv)
-        private var kcalTV:TextView = view.findViewById(R.id.meal_food_item_holder_kcal_tv)
+    inner class FoodHolder(
+        view: View,
+        private val onSelectedFoodLongClickListener: OnSelectedFoodLongClickListener,
+        private val onSelectedFoodClickListener: OnSelectedFoodClickListener
+    ) : RecyclerView.ViewHolder(view), View.OnLongClickListener, View.OnClickListener {
+        private var nameTV: TextView = view.findViewById(R.id.meal_food_item_holder_food_name_tv)
+        private var quantityTV: TextView = view.findViewById(R.id.meal_food_item_holder_quantity_tv)
+        private var unitTV: TextView = view.findViewById(R.id.meal_food_item_holder_weight_unit_tv)
+        private var kcalTV: TextView = view.findViewById(R.id.meal_food_item_holder_kcal_tv)
 
-        fun update(selectedFood: SelectedFood){
-            FoodDB.getFoodById(selectedFood.foodId){ food ->
+        fun update(selectedFood: SelectedFood) {
+            FoodDB.getFoodById(selectedFood.foodId) { food ->
                 nameTV.text = food.name
-                quantityTV.text = (selectedFood.quantity*100.0).toInt().toString()
+                quantityTV.text = (selectedFood.quantity * 100.0).toInt().toString()
                 unitTV.text = if (selectedFood.unit == FoodMeasureUnitEnum.GRAM) "g" else "oz"
                 kcalTV.text = (selectedFood.quantity * food.calories).toInt().toString()
             }
         }
+
+        override fun onLongClick(p0: View?): Boolean {
+            return onSelectedFoodLongClickListener.onSelectedFoodLongClick(getItem(absoluteAdapterPosition).id)
+        }
+
+        override fun onClick(p0: View?) {
+            onSelectedFoodClickListener.onSelectedFoodClick(getItem(absoluteAdapterPosition).id)
+        }
+    }
+
+    interface OnSelectedFoodClickListener {
+        fun onSelectedFoodClick(id:String)
+    }
+
+    interface OnSelectedFoodLongClickListener {
+        fun onSelectedFoodLongClick(id: String):Boolean
     }
 }

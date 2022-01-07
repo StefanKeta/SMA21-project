@@ -1,5 +1,6 @@
 package com.example.licenta.fragment.main.diary
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,10 +19,14 @@ import com.example.licenta.data.LoggedUserGoals
 import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.firebase.db.SelectedFoodDB
 import com.example.licenta.fragment.main.OnDateChangedListener
+import com.example.licenta.model.food.FoodMeasureUnitEnum
 import com.example.licenta.model.food.SelectedFood
 import com.example.licenta.util.Date
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +39,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment(),
-    View.OnClickListener, OnDateChangedListener {
+    View.OnClickListener, OnDateChangedListener, FoodAdapter.OnSelectedFoodLongClickListener,
+    FoodAdapter.OnSelectedFoodClickListener {
     private lateinit var addFoodBtn: Button
     private lateinit var remainingProteinTV: TextView
     private lateinit var proteinPB: LinearProgressIndicator
@@ -77,6 +83,69 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         }
     }
 
+    override fun onSelectedFoodClick(id: String) {
+        val view = LayoutInflater
+            .from(context!!)
+            .inflate(R.layout.dialog_edit_selected_food, null, false)
+        val quantityTIL: TextInputLayout =
+            view.findViewById(R.id.dialog_edit_selected_food_quantity_til)
+        val quantityET: TextInputEditText =
+            view.findViewById(R.id.dialog_edit_selected_food_quantity_et)
+        val unitGroup: MaterialButtonToggleGroup =
+            view.findViewById(R.id.dialog_edit_selected_food_quantity_tbg)
+        val gBtn: Button = view.findViewById(R.id.dialog_edit_selected_food_g_rb)
+
+        AlertDialog
+            .Builder(context!!)
+            .setView(view)
+            .setTitle("Edit selected food")
+            .setPositiveButton("Edit") { dialog, _ ->
+                if (quantityET.text.isNullOrEmpty()) {
+                    quantityTIL.error = "Please set the quantity"
+                } else {
+                    val quantity = quantityET.text.toString().trim().toDouble()
+                    val unit =
+                        if (unitGroup.checkedButtonId == gBtn.id) FoodMeasureUnitEnum.GRAM else FoodMeasureUnitEnum.OZ
+                    SelectedFoodDB
+                        .updateSelectedFood(id, quantity, unit) { isEdited ->
+                            if (isEdited) {
+                                refreshFood()
+                                dialog.dismiss()
+                            } else {
+                                dialog.dismiss()
+                            }
+                        }
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    override fun onSelectedFoodLongClick(id: String): Boolean {
+        AlertDialog
+            .Builder(context)
+            .setTitle("Are you sure you want to delete selected food?")
+            .setIcon(R.drawable.ic_baseline_delete_24)
+            .setPositiveButton("Yes") { dialog, _ ->
+                SelectedFoodDB.removeSelectedFood(id) { isRemoved ->
+                    if (isRemoved) {
+                        dialog.dismiss()
+                        refreshFood()
+                    } else {
+                        dialog.dismiss()
+                        Toast.makeText(context!!, "Could not remove food!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+        return true
+    }
+
+
     private fun setUpProgressBars(view: View) {
         remainingProteinTV = view.findViewById(R.id.fragment_diary_food_protein_remaining_tv)
         proteinPB = view.findViewById(R.id.fragment_diary_food_progress_bar_protein)
@@ -98,7 +167,8 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         foodRV.layoutManager = LinearLayoutManager(context)
         foodRV.hasFixedSize()
         foodRV.itemAnimator = null
-        foodAdapter = FoodAdapter(context!!, SelectedFoodDB.getSelectedFoodsOption(date))
+        foodAdapter =
+            FoodAdapter(context!!, SelectedFoodDB.getSelectedFoodsOption(date), this, this)
         foodRV.adapter = foodAdapter
     }
 
@@ -151,7 +221,12 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
     override fun changeDate(date: String) {
         this.date = date
         foodAdapter.updateOptions(SelectedFoodDB.getSelectedFoodsOption(date))
-        SelectedFoodDB.getSelectedFoodByDate(date,::updateMacrosAndCalories)
+        SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
+        foodAdapter.notifyDataSetChanged()
+    }
+
+    private fun refreshFood() {
+        SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
         foodAdapter.notifyDataSetChanged()
     }
 
@@ -174,5 +249,4 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
                 }
             }
     }
-
 }
