@@ -216,6 +216,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="3"
+                android:checkedButton="@id/activity_set_goal_lose_fat_rb"
                 android:paddingHorizontal="@dimen/app_horizontal_padding_standard"
                 android:layout_marginBottom="@dimen/login_form_fields_margin_between">
 
@@ -256,6 +257,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:checkedButton="@id/activity_set_goal_activity_sedentary_rb"
             android:paddingHorizontal="@dimen/app_horizontal_padding_standard"
             android:layout_marginBottom="@dimen/login_form_fields_margin_between"
             >

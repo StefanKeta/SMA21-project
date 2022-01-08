@@ -3,6 +3,7 @@ package com.example.licenta.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.licenta.R
@@ -69,6 +70,8 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
     private fun calculateCaloriesAndMacros(preference: PersonalWeightPreference, activity: Double) {
         val calories = CalorieCalculator.calculateCalories(preference, activity)
         val macros = MacroCalculator.calculateMacros(preference, calories)
+        Log.d("setGoals", "calculatedMacros: $macros")
+        Log.d("setGoals", "calculatedCalories: $calories")
         caloriesAndMacrosLayout.visibility = View.VISIBLE
         saveBtn.visibility = View.VISIBLE
         proteinTV.text = macros.first.toString()
@@ -121,7 +124,7 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
             R.id.activity_set_goal_activity_sedentary_rb -> 1.2
             R.id.activity_set_goal_activity_light_rb -> 1.375
             R.id.activity_set_goal_activity_moderate_rb -> 1.55
-            R.id.activity_set_goal_activity_very_active_rb -> 1.725
+            R.id.activity_set_goal_activity_active_rb -> 1.725
             else -> 1.9
         }
     }

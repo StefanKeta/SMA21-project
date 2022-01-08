@@ -51,5 +51,13 @@ object Date {
         return getDateFromTimestamp(dayBeforeTimestamp)
     }
 
+    fun parseAge(timestamp: Long):Int{
+        val todayTimestamp = LocalDate
+            .now()
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .epochSecond
+        return ((todayTimestamp - timestamp)/60/60/24/365).toInt()
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.example.licenta.math
 
+import android.util.Log
 import com.example.licenta.data.LoggedUserData
 import com.example.licenta.model.user.Gender
+import com.example.licenta.util.Date
 import com.example.licenta.util.PersonalWeightPreference
 
 object CalorieCalculator {
@@ -9,10 +11,11 @@ object CalorieCalculator {
     fun calculateCalories(
         preference: PersonalWeightPreference,
         activity: Double
-    ):Int{
+    ): Int {
         val user = LoggedUserData.getLoggedUser()
-        val userAge = 20
-        return when (preference){
+        val userAge = Date.parseAge(user.dob)
+        Log.d("setGoals", "userAge: $userAge")
+        return when (preference) {
             PersonalWeightPreference.FAT_LOSS -> calculateForFatLoss(
                 user.gender,
                 user.height,
@@ -63,8 +66,8 @@ object CalorieCalculator {
         val caloriesForMaintaining = calculateForMaintaining(gender, height, weight, age, activity)
         return when {
             caloriesForMaintaining < 2200 -> caloriesForMaintaining - (caloriesForMaintaining.toDouble() * 0.15).toInt()
-            caloriesForMaintaining in 2000..3500 -> caloriesForMaintaining - (caloriesForMaintaining.toDouble() * 0.2).toInt()
-            else -> caloriesForMaintaining - (caloriesForMaintaining.toDouble() * 0.25).toInt()
+            caloriesForMaintaining in 2000..3500 -> caloriesForMaintaining - (caloriesForMaintaining.toDouble() * 0.175).toInt()
+            else -> caloriesForMaintaining - (caloriesForMaintaining.toDouble() * 0.2).toInt()
         }
     }
 
@@ -77,8 +80,8 @@ object CalorieCalculator {
     ): Int {
         val caloriesForMaintaining = calculateForMaintaining(gender, height, weight, age, activity)
         return when {
-            caloriesForMaintaining < 2200 -> caloriesForMaintaining + (caloriesForMaintaining.toDouble() * 0.25).toInt()
-            caloriesForMaintaining in 2000..3500 -> caloriesForMaintaining + (caloriesForMaintaining.toDouble() * 0.2).toInt()
+            caloriesForMaintaining < 2200 -> caloriesForMaintaining + (caloriesForMaintaining.toDouble() * 0.2).toInt()
+            caloriesForMaintaining in 2000..3500 -> caloriesForMaintaining + (caloriesForMaintaining.toDouble() * 0.175).toInt()
             else -> caloriesForMaintaining + (caloriesForMaintaining.toDouble() * 0.15).toInt()
         }
     }
