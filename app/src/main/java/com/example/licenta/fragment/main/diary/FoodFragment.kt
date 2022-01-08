@@ -163,7 +163,6 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         caloriesPB = view.findViewById(R.id.fragment_diary_food_calories_remaining_pb)
         caloriesPB.max = LoggedUserGoals.getGoals().calories
         SelectedFoodDB.getSelectedFoodByDateAndId(
-            LoggedUserData.getLoggedUser().uuid,
             date,
             ::updateMacrosAndCalories
         )
@@ -229,7 +228,6 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         this.date = date
         foodAdapter.updateOptions(SelectedFoodDB.getSelectedFoodsOption(date))
         SelectedFoodDB.getSelectedFoodByDateAndId(
-            LoggedUserData.getLoggedUser().uuid,
             date,
             ::updateMacrosAndCalories
         )
@@ -238,7 +236,6 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
 
     private fun refreshFood() {
         SelectedFoodDB.getSelectedFoodByDateAndId(
-            LoggedUserData.getLoggedUser().uuid,
             date,
             ::updateMacrosAndCalories
         )

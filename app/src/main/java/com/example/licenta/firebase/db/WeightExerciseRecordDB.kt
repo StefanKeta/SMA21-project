@@ -1,11 +1,9 @@
 package com.example.licenta.firebase.db
 
-import android.util.Log
 import com.example.licenta.data.LoggedUserData
 import com.example.licenta.model.exercise.WeightExerciseRecord
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import java.lang.RuntimeException
 
 object WeightExerciseRecordDB {
@@ -18,6 +16,7 @@ object WeightExerciseRecordDB {
 
     fun exerciseAdapterOptions(date: String): FirestoreRecyclerOptions<WeightExerciseRecord> {
         val query = collectionRef
+            .whereEqualTo(WeightExerciseRecord.USER_ID,LoggedUserData.getLoggedUser().uuid)
             .whereEqualTo(WeightExerciseRecord.DATE, date)
 
         return FirestoreRecyclerOptions

@@ -117,7 +117,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun userLoginCallback(isLoggedIn: Boolean) {
         if (isLoggedIn) {
-            UsersDB.getUser(Auth.currentUser()!!.uid,::getUserCallback)
+            UsersDB.getUser(Auth.currentUser()!!.uid, ::getUserCallback)
         } else {
             Toast.makeText(
                 this,
@@ -125,6 +125,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 Toast.LENGTH_SHORT
             )
                 .show()
+            loginBtn.isClickable = true
         }
     }
 
