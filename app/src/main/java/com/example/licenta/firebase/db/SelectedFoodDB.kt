@@ -1,5 +1,6 @@
 package com.example.licenta.firebase.db
 
+import android.util.Log
 import com.example.licenta.model.food.FoodMeasureUnitEnum
 import com.example.licenta.model.food.SelectedFood
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -24,9 +25,14 @@ object SelectedFoodDB {
             }
     }
 
-    fun getSelectedFoodByDate(date: String, callback: (List<SelectedFood>) -> Unit) {
+    fun getSelectedFoodByDateAndId(
+        userId: String,
+        date: String,
+        callback: (List<SelectedFood>) -> Unit
+    ) {
         db
             .collection(CollectionsName.SELECTED_FOOD)
+            .whereEqualTo(SelectedFood.USER_ID, userId)
             .whereEqualTo(SelectedFood.DATE_SELECTED, date)
             .get()
             .addOnCompleteListener { result ->
@@ -56,32 +62,37 @@ object SelectedFoodDB {
             .build()
     }
 
-    fun removeSelectedFood(id:String,callback: (Boolean) -> Unit){
+    fun removeSelectedFood(id: String, callback: (Boolean) -> Unit) {
         db
             .collection(CollectionsName.SELECTED_FOOD)
             .document(id)
             .delete()
             .addOnCompleteListener { result ->
-                if(result.isSuccessful){
+                if (result.isSuccessful) {
                     callback(true)
-                }else{
+                } else {
                     callback(false)
                 }
             }
     }
 
-    fun updateSelectedFood(id:String,quantity:Double,unit:FoodMeasureUnitEnum,callback: (Boolean) -> Unit){
+    fun updateSelectedFood(
+        id: String,
+        quantity: Double,
+        unit: FoodMeasureUnitEnum,
+        callback: (Boolean) -> Unit
+    ) {
         db
             .collection(CollectionsName.SELECTED_FOOD)
             .document(id)
             .update(
-                SelectedFood.QUANTITY,quantity,
-                SelectedFood.UNIT,unit
+                SelectedFood.QUANTITY, quantity,
+                SelectedFood.UNIT, unit
             )
             .addOnCompleteListener { result ->
-                if(result.isSuccessful){
+                if (result.isSuccessful) {
                     callback(true)
-                }else{
+                } else {
                     callback(false)
                 }
             }

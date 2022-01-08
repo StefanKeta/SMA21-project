@@ -1,6 +1,7 @@
 package com.example.licenta.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,11 @@ class FoodAdapter(
                 unitTV.text = if (selectedFood.unit == FoodMeasureUnitEnum.GRAM) "g" else "oz"
                 kcalTV.text = (selectedFood.quantity * food.calories).toInt().toString()
             }
+        }
+
+        init {
+            view.setOnLongClickListener(this)
+            view.setOnClickListener(this)
         }
 
         override fun onLongClick(p0: View?): Boolean {

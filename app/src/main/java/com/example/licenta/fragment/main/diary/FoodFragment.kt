@@ -2,6 +2,7 @@ package com.example.licenta.fragment.main.diary
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
 import com.example.licenta.adapter.FoodAdapter
 import com.example.licenta.contract.AddedFoodForUserContract
+import com.example.licenta.data.LoggedUserData
 import com.example.licenta.data.LoggedUserGoals
 import com.example.licenta.firebase.db.FoodDB
 import com.example.licenta.firebase.db.SelectedFoodDB
@@ -99,11 +101,12 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
             .Builder(context!!)
             .setView(view)
             .setTitle("Edit selected food")
+            .setIcon(R.drawable.ic_baseline_edit_24)
             .setPositiveButton("Edit") { dialog, _ ->
                 if (quantityET.text.isNullOrEmpty()) {
                     quantityTIL.error = "Please set the quantity"
                 } else {
-                    val quantity = quantityET.text.toString().trim().toDouble()
+                    val quantity = quantityET.text.toString().trim().toDouble() / 100.0
                     val unit =
                         if (unitGroup.checkedButtonId == gBtn.id) FoodMeasureUnitEnum.GRAM else FoodMeasureUnitEnum.OZ
                     SelectedFoodDB
@@ -159,7 +162,11 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         remainingCaloriesTV = view.findViewById(R.id.fragment_diary_food_calories_remaining_tv)
         caloriesPB = view.findViewById(R.id.fragment_diary_food_calories_remaining_pb)
         caloriesPB.max = LoggedUserGoals.getGoals().calories
-        SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
+        SelectedFoodDB.getSelectedFoodByDateAndId(
+            LoggedUserData.getLoggedUser().uuid,
+            date,
+            ::updateMacrosAndCalories
+        )
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -221,12 +228,20 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
     override fun changeDate(date: String) {
         this.date = date
         foodAdapter.updateOptions(SelectedFoodDB.getSelectedFoodsOption(date))
-        SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
+        SelectedFoodDB.getSelectedFoodByDateAndId(
+            LoggedUserData.getLoggedUser().uuid,
+            date,
+            ::updateMacrosAndCalories
+        )
         foodAdapter.notifyDataSetChanged()
     }
 
     private fun refreshFood() {
-        SelectedFoodDB.getSelectedFoodByDate(date, ::updateMacrosAndCalories)
+        SelectedFoodDB.getSelectedFoodByDateAndId(
+            LoggedUserData.getLoggedUser().uuid,
+            date,
+            ::updateMacrosAndCalories
+        )
         foodAdapter.notifyDataSetChanged()
     }
 
