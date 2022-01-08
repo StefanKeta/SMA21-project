@@ -74,7 +74,7 @@
     <string name="activity_food_info_quantity_tv">Quantity</string>
     <string name="unit_oz">oz</string>
     <string name="activity_register_food_save_btn">Save</string>
-    <string name="activity_register_food_cancel_btn">Cancel</string>
+    <string name="button_cancel">Cancel</string>
     <string name="activity_register_food_carbs_g_tv">Carbs(g)</string>
     <string name="activity_register_food_fat_g_tv">Fat(g)</string>
     <string name="activity_register_food_protein_g_tv">Protein(g)</string>
@@ -93,4 +93,5 @@
     <string name="exercise_reps">Reps: </string>
     <string name="exercise_weight">Weight: </string>
     <string name="places_api_key">AIzaSyDHzT5Q-MNVFHmgnXfdo4Zqvp-av7Tk0Dk</string>
+    <string name="button_edit">Edit</string>
 </resources>

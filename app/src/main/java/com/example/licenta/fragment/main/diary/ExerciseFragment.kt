@@ -1,26 +1,27 @@
 package com.example.licenta.fragment.main.diary
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
+import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.licenta.R
-import com.example.licenta.activity.diary.AddExerciseActivity
 import com.example.licenta.adapter.ExerciseAdapter
 import com.example.licenta.contract.AddExerciseContract
+import com.example.licenta.firebase.db.PersonalRecordsDB
 import com.example.licenta.firebase.db.WeightExerciseRecordDB
 import com.example.licenta.fragment.main.OnDateChangedListener
 import com.example.licenta.util.Date
-import java.util.*
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,10 +34,11 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragment(),
-    View.OnClickListener, OnDateChangedListener {
+    View.OnClickListener, OnDateChangedListener, ExerciseAdapter.OnExerciseLongClickListener,
+    ExerciseAdapter.OnExerciseClickListener {
     private lateinit var addExerciseBtn: Button
     private lateinit var exercisesRV: RecyclerView
-    private lateinit var adapter : ExerciseAdapter
+    private lateinit var adapter: ExerciseAdapter
     private lateinit var addExerciseContract: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,22 +79,120 @@ class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragme
         refreshAdapter()
     }
 
+    override fun onExerciseLongClick(recordId: String, exerciseId: String): Boolean {
+        AlertDialog
+            .Builder(context!!)
+            .setIcon(R.drawable.ic_baseline_delete_24)
+            .setTitle("Are you sure you want to remove the exercise?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                handleExerciseRecordRemoval(recordId, exerciseId, dialog)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+        return true
+    }
+
+    override fun onExerciseClick(recordId: String, exerciseId: String) {
+        setUpEditDialogAndHandleEditing(recordId, exerciseId)
+    }
+
     private fun handleResponseFromAddExerciseActivity(isAdded: Boolean) {
-        if(isAdded)
+        if (isAdded)
             refreshAdapter()
     }
 
-    private fun refreshAdapter(){
+    private fun refreshAdapter() {
         val options = WeightExerciseRecordDB.exerciseAdapterOptions(date)
         adapter.updateOptions(options)
         adapter.notifyDataSetChanged()
     }
 
-    private fun setUpAdapter(){
+    private fun setUpAdapter() {
         val options = WeightExerciseRecordDB.exerciseAdapterOptions(date)
-        adapter = ExerciseAdapter(context!!,options)
+        adapter = ExerciseAdapter(context!!, options, this, this)
         exercisesRV.adapter = adapter
     }
+
+    private fun handleExerciseRecordRemoval(
+        recordId: String,
+        exerciseId: String,
+        dialog: DialogInterface
+    ) {
+        WeightExerciseRecordDB.removeRecord(recordId) { isRemoved ->
+            if (isRemoved) {
+                PersonalRecordsDB.removeIfPersonalRecord(exerciseId) { isPersonalRecordRemoved ->
+                    Log.d("onRemove", "handleExerciseRecordRemoval: $exerciseId")
+                    if (isPersonalRecordRemoved)
+                        updatePersonalRecord(exerciseId)
+                    dialog.dismiss()
+                }
+            } else {
+                Toast.makeText(context!!, "Could not remove this record", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+        }
+    }
+
+    private fun updatePersonalRecord(exerciseId: String) {
+        WeightExerciseRecordDB
+            .getMaximumWeightLifted(exerciseId) { isFound, newRecordWeight ->
+                if (isFound) {
+                    PersonalRecordsDB.addRecord(exerciseId, newRecordWeight)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+    }
+
+    private fun setUpEditDialogAndHandleEditing(recordId: String, exerciseId: String) {
+        val view = LayoutInflater
+            .from(context!!)
+            .inflate(R.layout.dialog_edit_exercise_record, null, false)
+        var setsTIL: TextInputLayout = view.findViewById(R.id.dialog_edit_exercise_sets_tila)
+        var setsET: TextInputEditText = view.findViewById(R.id.dialog_edit_exercise_sets_et)
+        var repsTIL: TextInputLayout = view.findViewById(R.id.dialog_edit_exercise_reps_tila)
+        var repsET: TextInputEditText = view.findViewById(R.id.dialog_edit_exercise_reps_et)
+        var weightTIL: TextInputLayout = view.findViewById(R.id.dialog_edit_exercise_weight_tila)
+        var weightET: TextInputEditText = view.findViewById(R.id.dialog_edit_exercise_weight_et)
+        var cancelBtn: Button = view.findViewById(R.id.dialog_edit_exercise_cancel_btn)
+        var editBtn: Button = view.findViewById(R.id.dialog_edit_exercise_edit_btn)
+
+        val dialog = AlertDialog
+            .Builder(context!!)
+            .setView(view)
+            .setIcon(R.drawable.ic_baseline_edit_24)
+            .setTitle("Edit your exercise record")
+            .show()
+
+        cancelBtn.setOnClickListener { _ -> dialog.dismiss() }
+        editBtn.setOnClickListener { _ ->
+            if (setsET.text.isNullOrEmpty())
+                setsTIL.error = "Please enter sets"
+            else if (repsET.text.isNullOrEmpty())
+                repsTIL.error = "Please enter reps"
+            else if (weightET.text.isNullOrEmpty())
+                weightTIL.error = "Please enter weight"
+            else {
+                WeightExerciseRecordDB.updateRecord(
+                    recordId,
+                    setsET.text.toString().trim().toInt(),
+                    repsET.text.toString().trim().toInt(),
+                    weightET.text.toString().trim().toDouble(),
+                ) { isUpdated ->
+                    if (isUpdated) {
+                        PersonalRecordsDB.checkAndUpdateRecordIfNeeded(
+                            exerciseId,
+                            weightET.text.toString().trim().toDouble()
+                        )
+                        adapter.notifyDataSetChanged()
+                    }
+                    dialog.dismiss()
+                }
+            }
+        }
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -123,5 +223,4 @@ class ExerciseFragment(private var date: String = Date.setCurrentDay()) : Fragme
                 }
             }
     }
-
 }

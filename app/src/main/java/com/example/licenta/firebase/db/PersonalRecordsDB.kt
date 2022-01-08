@@ -1,6 +1,5 @@
 package com.example.licenta.firebase.db
 
-import android.util.Log
 import com.example.licenta.data.LoggedUserData
 import com.example.licenta.model.exercise.PersonalRecord
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,9 +12,11 @@ object PersonalRecordsDB {
         FirebaseFirestore.getInstance()
     }
 
+    private val collectionRef = db
+        .collection(CollectionsName.PERSONAL_RECORDS)
+
     fun getAllRecords(callback: (MutableList<PersonalRecord>) -> Unit) {
-        db
-            .collection(CollectionsName.PERSONAL_RECORDS)
+        collectionRef
             .whereEqualTo(PersonalRecord.USER_ID, LoggedUserData.getLoggedUser().uuid)
             .get()
             .addOnCompleteListener { snapshot ->
@@ -27,8 +28,7 @@ object PersonalRecordsDB {
                             .also {
                                 if (it != null) {
                                     records.add(it)
-                                }
-                                else
+                                } else
                                     throw RuntimeException("Oops! Could not parse personal record document to an object!")
                             }
                     callback(records)
@@ -37,10 +37,9 @@ object PersonalRecordsDB {
     }
 
     fun checkIfRecord(exerciseId: String, currentWeight: Double, callback: (Boolean) -> Unit) {
-        db
-            .collection(CollectionsName.PERSONAL_RECORDS)
+        collectionRef
             .whereEqualTo(PersonalRecord.EXERCISE_ID, exerciseId)
-            .whereEqualTo(PersonalRecord.USER_ID,LoggedUserData.getLoggedUser().uuid)
+            .whereEqualTo(PersonalRecord.USER_ID, LoggedUserData.getLoggedUser().uuid)
             .get()
             .addOnCompleteListener { snapshot ->
                 val documents = snapshot.result.documents
@@ -65,10 +64,9 @@ object PersonalRecordsDB {
         exerciseId: String,
         weight: Double
     ) {
-        db
-            .collection(CollectionsName.PERSONAL_RECORDS)
+        collectionRef
             .whereEqualTo(PersonalRecord.EXERCISE_ID, exerciseId)
-            .whereEqualTo(PersonalRecord.USER_ID,LoggedUserData.getLoggedUser().uuid)
+            .whereEqualTo(PersonalRecord.USER_ID, LoggedUserData.getLoggedUser().uuid)
             .get()
             .addOnCompleteListener { snapshot ->
                 if (snapshot.isSuccessful) {
@@ -84,16 +82,36 @@ object PersonalRecordsDB {
                                     }
                                 }
                             }
-                    else{
-                        addRecord(exerciseId,weight)
+                    else {
+                        addRecord(exerciseId, weight)
                     }
                 }
             }
     }
 
+    fun removeIfPersonalRecord(exerciseId: String, callback: (Boolean) -> Unit) {
+        collectionRef
+            .whereEqualTo(PersonalRecord.EXERCISE_ID, exerciseId)
+            .whereEqualTo(PersonalRecord.USER_ID, LoggedUserData.getLoggedUser().uuid)
+            .get()
+            .addOnCompleteListener { snapshot ->
+                if (snapshot.isSuccessful) {
+                    for (document in snapshot.result)
+                        collectionRef.document(document.id).delete()
+                            .addOnCompleteListener { removedSnapshot ->
+                                if (removedSnapshot.isSuccessful)
+                                    callback(true)
+                                else
+                                    callback(false)
+                            }
+                } else
+                    callback(false)
+            }
+    }
+
+
     private fun updateRecord(recordId: String, weight: Double) {
-        db
-            .collection(CollectionsName.PERSONAL_RECORDS)
+        collectionRef
             .document(recordId)
             .update(PersonalRecord.RECORD, weight)
             .addOnCompleteListener { task ->
@@ -103,20 +121,20 @@ object PersonalRecordsDB {
             }
     }
 
-    private fun addRecord(exerciseId: String, weight: Double){
+    fun addRecord(exerciseId: String, weight: Double) {
         val record = PersonalRecord(
             UUID.randomUUID().toString(),
             exerciseId,
             LoggedUserData.getLoggedUser().uuid,
             weight
         )
-        db
-            .collection(CollectionsName.PERSONAL_RECORDS)
+        collectionRef
             .add(record)
             .addOnCompleteListener { ref ->
-                if(!ref.isSuccessful)
+                if (!ref.isSuccessful)
                     throw RuntimeException("Could not add record to db!")
             }
     }
+
 
 }

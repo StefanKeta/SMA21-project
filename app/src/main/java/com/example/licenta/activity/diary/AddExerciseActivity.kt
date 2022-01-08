@@ -15,6 +15,7 @@ import com.example.licenta.R
 import com.example.licenta.activity.MainActivity
 import com.example.licenta.adapter.AddExerciseAdapter
 import com.example.licenta.contract.AddCustomExerciseContract
+import com.example.licenta.data.LoggedUserData
 import com.example.licenta.firebase.db.ExercisesDB
 import com.example.licenta.firebase.db.PersonalRecordsDB
 import com.example.licenta.firebase.db.WeightExerciseRecordDB
@@ -164,7 +165,7 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
             .Builder(this@AddExerciseActivity)
             .setView(view)
             .setNegativeButton(
-                R.string.activity_register_food_cancel_btn
+                R.string.button_cancel
             ) { dialog, _ -> dialog!!.dismiss() }
             .setPositiveButton(R.string.activity_register_food_save_btn) { dialog, _ ->
                 if (dialogInputsFilled()) {
@@ -194,6 +195,7 @@ class AddExerciseActivity : AppCompatActivity(), AdapterView.OnItemClickListener
         val weightExerciseRecord = WeightExerciseRecord(
             UUID.randomUUID().toString(),
             exerciseId,
+            LoggedUserData.getLoggedUser().uuid,
             setsET.text.toString().trim().toInt(),
             repsET.text.toString().trim().toInt(),
             weightET.text.toString().toDouble(),
