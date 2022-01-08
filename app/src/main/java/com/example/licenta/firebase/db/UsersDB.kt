@@ -18,12 +18,6 @@ object UsersDB {
         db.collection(CollectionsName.USERS)
             .add(user)
             .addOnSuccessListener {
-                Toast.makeText(
-                    ctx,
-                    "User added!",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
                 ctx.startActivity(Intent(ctx, LoginActivity::class.java))
             }
             .addOnFailureListener {

@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import com.example.licenta.R
 import com.example.licenta.data.LoggedUserData
+import com.example.licenta.data.LoggedUserGoals
 import com.example.licenta.firebase.db.GoalsDB
 import com.example.licenta.math.CalorieCalculator
 import com.example.licenta.math.MacroCalculator
@@ -24,9 +25,9 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var proteinTV: TextView
     private lateinit var fatTV: TextView
     private lateinit var carbsTV: TextView
-    private lateinit var caloriesTV : TextView
-    private lateinit var heightTV : TextView
-    private lateinit var weightTV : TextView
+    private lateinit var caloriesTV: TextView
+    private lateinit var heightTV: TextView
+    private lateinit var weightTV: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +44,9 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
         fatTV = findViewById(R.id.activity_set_goal_fat_tv)
         caloriesTV = findViewById(R.id.activity_set_goal_calories_tv)
         heightTV = findViewById(R.id.activity_set_goal_height_tv)
-        heightTV.text=LoggedUserData.getLoggedUser().height.toString()
+        heightTV.text = LoggedUserData.getLoggedUser().height.toString()
         weightTV = findViewById(R.id.activity_set_goal_weight_tv)
-        weightTV.text=LoggedUserData.getLoggedUser().weight.toString()
+        weightTV.text = LoggedUserData.getLoggedUser().weight.toString()
         calculateBtn = findViewById(R.id.activity_set_goal_calculate_btn)
         calculateBtn.setOnClickListener(this)
         saveBtn = findViewById(R.id.activity_set_goal_save_btn)
@@ -76,7 +77,7 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
         caloriesTV.text = calories.toString()
     }
 
-    private fun save(preference: PersonalWeightPreference, activity: Double){
+    private fun save(preference: PersonalWeightPreference, activity: Double) {
         val calories = CalorieCalculator.calculateCalories(preference, activity)
         val macros = MacroCalculator.calculateMacros(preference, calories)
         val goals = Goals(
@@ -87,19 +88,26 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
             macros.third,
             macros.second
         )
-        GoalsDB.addUserGoals(goals){
-            goToMainActivityAttemptCallback(it)
+        GoalsDB.addUserGoals(goals) { areAdded, userGoals ->
+            goToMainActivityAttemptCallback(areAdded, userGoals)
         }
     }
 
-    private fun goToMainActivityAttemptCallback(addedSuccessfully: Boolean){
-        if(addedSuccessfully) startActivity(Intent(this@SetGoalsActivity,MainActivity::class.java))
-        else
+    private fun goToMainActivityAttemptCallback(addedSuccessfully: Boolean, goals: Goals?) {
+        if (addedSuccessfully) {
+            startActivity(Intent(this@SetGoalsActivity, MainActivity::class.java))
+            LoggedUserGoals.setGoals(goals!!)
+        } else
             Toast
-                .makeText(this@SetGoalsActivity,"Oops! Something went wrong, try again",Toast.LENGTH_SHORT)
+                .makeText(
+                    this@SetGoalsActivity,
+                    "Oops! Something went wrong, try again",
+                    Toast.LENGTH_SHORT
+                )
                 .show()
 
     }
+
     private fun getPreference(): PersonalWeightPreference {
         return when (goalRadioGroup.checkedRadioButtonId) {
             R.id.activity_set_goal_lose_fat_rb -> PersonalWeightPreference.FAT_LOSS

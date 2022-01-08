@@ -72,6 +72,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         if (!validateEmail(email) || !validatePassword(password)) {
             Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT)
                 .show()
+            loginBtn.isClickable = true
         } else {
             Auth.loginUser(email, password, ::userLoginCallback)
         }
@@ -140,11 +141,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val userId = LoggedUserData.getLoggedUser().uuid
         GoalsDB.userHasGoals(userId) {
             if (it) {
-                GoalsDB.getUserGoals(userId) {
-                    checkIfGoalsAreSetCallback(it)
+                GoalsDB.getUserGoals(userId) { hasSetGoals ->
+                    checkIfGoalsAreSetCallback(hasSetGoals)
                 }
             } else {
                 startActivity(Intent(this@LoginActivity, SetGoalsActivity::class.java))
+                finish()
             }
         }
     }
@@ -152,6 +154,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private fun checkIfGoalsAreSetCallback(areSet: Boolean) {
         if (areSet) {
             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            finish()
         } else {
             Toast.makeText(this@LoginActivity, "Oops! Something went wrong!", Toast.LENGTH_SHORT)
                 .show()

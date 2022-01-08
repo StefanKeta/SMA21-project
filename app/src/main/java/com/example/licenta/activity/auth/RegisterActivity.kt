@@ -11,6 +11,7 @@ import com.example.licenta.util.Date
 import com.example.licenta.util.Util
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.MaterialDatePicker.INPUT_MODE_CALENDAR
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -166,7 +167,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             .show(supportFragmentManager, null)
 
         datePicker.addOnPositiveButtonClickListener {
-            dobET.setText(Date.getDateFromTimestamp(datePicker.selection!!))
+            dobET.setText(Date.getDateFromTimestamp(datePicker.selection!!/1000))
             datePicker.dismiss()
         }
 
@@ -192,7 +193,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 firstNameET.text.toString().trim(),
                 lastNameET.text.toString().trim(),
                 emailET.text.toString().trim(),
-                dobTimestamp.toLong(),
+                dobTimestamp,
                 getGender(),
                 heightET.text.toString().trim().toInt(),
                 weightET.text.toString().trim().toInt(), passwordET.text.toString().trim()

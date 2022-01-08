@@ -28,14 +28,14 @@ object GoalsDB {
             }
     }
 
-    fun addUserGoals(goals: Goals, callback: (Boolean) -> Unit) {
+    fun addUserGoals(goals: Goals, callback: (Boolean,Goals?) -> Unit) {
         db.collection(CollectionsName.GOALS)
             .add(goals)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    callback(true)
+                    callback(true,goals)
                 } else
-                    callback(false)
+                    callback(false,null)
             }
     }
 
