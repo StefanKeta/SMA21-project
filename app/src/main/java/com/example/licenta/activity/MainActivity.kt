@@ -15,10 +15,7 @@ import com.example.licenta.R
 import com.example.licenta.activity.auth.LoginActivity
 import com.example.licenta.data.LoggedUserData
 import com.example.licenta.firebase.db.UsersDB
-import com.example.licenta.fragment.main.DiaryFragment
-import com.example.licenta.fragment.main.HomeFragment
-import com.example.licenta.fragment.main.MapsFragment
-import com.example.licenta.fragment.main.ProfileFragment
+import com.example.licenta.fragment.main.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView

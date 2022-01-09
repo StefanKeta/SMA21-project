@@ -94,4 +94,5 @@
     <string name="exercise_weight">Weight: </string>
     <string name="places_api_key">AIzaSyDHzT5Q-MNVFHmgnXfdo4Zqvp-av7Tk0Dk</string>
     <string name="button_edit">Edit</string>
+    <string name="button_search_area">Search this area</string>
 </resources>
