@@ -14,8 +14,11 @@ object UsersDB {
         FirebaseFirestore.getInstance()
     }
 
+    private val collection = db
+        .collection(CollectionsName.USERS)
+
     fun addUser(user: User, ctx: Context) {
-        db.collection(CollectionsName.USERS)
+        collection
             .add(user)
             .addOnSuccessListener {
                 ctx.startActivity(Intent(ctx, LoginActivity::class.java))
@@ -27,13 +30,37 @@ object UsersDB {
     }
 
     fun getUser(id: String, callback: (User?) -> Unit) {
-        db.collection(CollectionsName.USERS)
+        collection
             .whereEqualTo(User.USER_UUID, id)
             .get()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    if (it.result!!.documents.size == 1)
+                    if (it.result.documents[0] != null)
                         callback(it.result!!.documents[0].toObject(User::class.java))
+                } else
+                    callback(null)
+            }
+    }
+
+    fun updateWeight(newWeight: Int, callback: (User?) -> Unit) {
+        collection
+            .whereEqualTo(User.USER_UUID, LoggedUserData.getLoggedUser().uuid)
+            .get()
+            .addOnCompleteListener { snapshots ->
+                val docs = snapshots.result.documents
+                val userDoc = docs[0]
+                if (userDoc != null) {
+                    collection
+                        .document(userDoc.id)
+                        .update(User.WEIGHT, newWeight)
+                        .addOnCompleteListener { result ->
+                            if (result.isSuccessful) {
+                                getUser(LoggedUserData.getLoggedUser().uuid){
+                                    callback(it)
+                                }
+                            } else
+                                callback(null)
+                        }
                 } else
                     callback(null)
             }

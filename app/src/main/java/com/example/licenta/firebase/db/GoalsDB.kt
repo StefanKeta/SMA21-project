@@ -28,32 +28,65 @@ object GoalsDB {
             }
     }
 
-    fun addUserGoals(goals: Goals, callback: (Boolean,Goals?) -> Unit) {
+    fun addUserGoals(goals: Goals, callback: (Boolean, Goals?) -> Unit) {
         db.collection(CollectionsName.GOALS)
             .add(goals)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    callback(true,goals)
+                    callback(true, goals)
                 } else
-                    callback(false,null)
+                    callback(false, null)
             }
     }
 
-    fun getUserGoals(userId:String,callback: (Boolean) -> Unit){
+    fun getUserGoals(userId: String, callback: (Boolean) -> Unit) {
         db.collection(CollectionsName.GOALS)
             .whereEqualTo(Goals.USER_ID, userId)
             .get()
             .addOnCompleteListener {
-                if (it.isSuccessful){
+                if (it.isSuccessful) {
                     val results = it.result!!.documents
-                    if(results.size == 1){
+                    if (results.size == 1) {
                         val goals = results[0].toObject(Goals::class.java)
                         LoggedUserGoals.setGoals(goals!!)
                         callback(true)
-                    }else{
+                    } else {
                         callback(false)
                     }
-                }else{
+                } else {
+                    callback(false)
+                }
+            }
+    }
+
+    fun updateGoals(
+        id: String,
+        macros: Triple<Int, Int, Int>,
+        calories: Int,
+        callback: (Boolean) -> Unit
+    ) {
+        db.collection(CollectionsName.GOALS)
+            .document(id)
+            .update(
+                Goals.PROTEIN, macros.first,
+                Goals.FAT, macros.second,
+                Goals.CARBS, macros.third,
+                Goals.CALORIES, calories
+            )
+            .addOnCompleteListener {
+                if (it.isSuccessful)
+                    db.collection(CollectionsName.GOALS)
+                        .document(id)
+                        .get()
+                        .addOnCompleteListener { goals ->
+                            if (goals.isSuccessful) {
+                                val goal = goals.result.toObject(Goals::class.java)
+                                LoggedUserGoals.setGoals(goal)
+                                callback(true)
+                            } else {
+                                callback(false)
+                            }
+                        } else {
                     callback(false)
                 }
             }

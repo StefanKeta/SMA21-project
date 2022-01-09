@@ -1,5 +1,7 @@
 package com.example.licenta.model.user
 
+import com.google.firebase.firestore.DocumentId
+
 
 data class User(
     val uuid: String = "",

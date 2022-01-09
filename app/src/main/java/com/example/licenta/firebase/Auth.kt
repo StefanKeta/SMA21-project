@@ -1,6 +1,7 @@
 package com.example.licenta.firebase
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.example.licenta.R
 import com.example.licenta.firebase.db.UsersDB

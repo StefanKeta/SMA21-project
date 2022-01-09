@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import com.example.licenta.R
 import com.example.licenta.activity.auth.LoginActivity
@@ -33,6 +34,7 @@ private const val ARG_PARAM2 = "param2"
 class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener, View.OnClickListener {
     private lateinit var fragmentFrameLayout: FrameLayout
     private lateinit var profilePhoto: ImageView
+    private lateinit var nameTV: TextView
     private lateinit var logOut: ImageView
     private lateinit var infoTab: TabLayout
 
@@ -46,6 +48,9 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener, View.OnClic
         infoTab.addOnTabSelectedListener(this)
         profilePhoto = view.findViewById(R.id.fragment_profile_photo_profile_iv)
         logOut = view.findViewById(R.id.fragment_profile_button_log_out_btn)
+        nameTV = view.findViewById(R.id.fragment_profile_name_tv)
+        nameTV.text =
+            "${LoggedUserData.getLoggedUser().firstName} ${LoggedUserData.getLoggedUser().lastName}"
         logOut.setOnClickListener(this)
     }
 
@@ -68,11 +73,11 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener, View.OnClic
     }
 
     override fun onClick(view: View?) {
-        if(view!!.id == R.id.fragment_profile_button_log_out_btn){
+        if (view!!.id == R.id.fragment_profile_button_log_out_btn) {
             Auth.logUserOut()
             LoggedUserData.setLoggedUser(null)
             LoggedUserGoals.setGoals(null)
-            startActivity(Intent(context!!,LoginActivity::class.java))
+            startActivity(Intent(context!!, LoginActivity::class.java))
             activity!!.finish()
         }
     }

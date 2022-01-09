@@ -13,6 +13,7 @@ import com.example.licenta.firebase.db.GoalsDB
 import com.example.licenta.math.CalorieCalculator
 import com.example.licenta.math.MacroCalculator
 import com.example.licenta.model.user.Goals
+import com.example.licenta.util.IntentConstants
 import com.example.licenta.util.PersonalWeightPreference
 import java.util.*
 
@@ -29,6 +30,7 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var caloriesTV: TextView
     private lateinit var heightTV: TextView
     private lateinit var weightTV: TextView
+    private var isUpdate: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,7 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
         calculateBtn.setOnClickListener(this)
         saveBtn = findViewById(R.id.activity_set_goal_save_btn)
         saveBtn.setOnClickListener(this)
+        isUpdate = intent.extras?.getBoolean(IntentConstants.EXISTS, false) ?: false
     }
 
     override fun onClick(v: View?) {
@@ -83,16 +86,23 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
     private fun save(preference: PersonalWeightPreference, activity: Double) {
         val calories = CalorieCalculator.calculateCalories(preference, activity)
         val macros = MacroCalculator.calculateMacros(preference, calories)
-        val goals = Goals(
-            UUID.randomUUID().toString(),
-            LoggedUserData.getLoggedUser().uuid,
-            calories,
-            macros.first,
-            macros.third,
-            macros.second
-        )
-        GoalsDB.addUserGoals(goals) { areAdded, userGoals ->
-            goToMainActivityAttemptCallback(areAdded, userGoals)
+        if(isUpdate){
+            val id =LoggedUserGoals.getGoals().goalsID
+            GoalsDB.updateGoals(id,macros,calories){
+                goToMainActivityAttemptCallback(it,LoggedUserGoals.getGoals())
+            }
+        }else {
+            val goals = Goals(
+                UUID.randomUUID().toString(),
+                LoggedUserData.getLoggedUser().uuid,
+                calories,
+                macros.first,
+                macros.third,
+                macros.second
+            )
+            GoalsDB.addUserGoals(goals) { areAdded, userGoals ->
+                goToMainActivityAttemptCallback(areAdded, userGoals)
+            }
         }
     }
 
