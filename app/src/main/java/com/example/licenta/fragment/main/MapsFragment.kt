@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.licenta.R
 import com.example.licenta.api.APIHandler
@@ -44,15 +45,7 @@ import java.math.RoundingMode
 class MapsFragment : Fragment(), PlaceSelectionListener, GoogleMap.OnCameraIdleListener,
     View.OnClickListener {
 
-    private val locationRequestLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { map ->
-        for (entry in map.entries) {
-            if (entry.key == Manifest.permission.ACCESS_FINE_LOCATION || entry.key == Manifest.permission.ACCESS_COARSE_LOCATION) setUpMap()
-            else requestLocationPermission()
-        }
-    }
-
+    private lateinit var locationRequestLauncher : ActivityResultLauncher<Array<String>?>
     private lateinit var mapView: View
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -90,6 +83,14 @@ class MapsFragment : Fragment(), PlaceSelectionListener, GoogleMap.OnCameraIdleL
         autocompleteSupportFragment.setOnPlaceSelectedListener(this)
         apiService = APIHandler.googlePlacesService
         mapView = mapFragment.view!!
+        locationRequestLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { map ->
+            for (entry in map.entries) {
+                if (entry.key == Manifest.permission.ACCESS_FINE_LOCATION || entry.key == Manifest.permission.ACCESS_COARSE_LOCATION) setUpMap()
+                else requestLocationPermission()
+            }
+        }
         mapFragment.getMapAsync(::onMapReadyCallback)
         return view
     }

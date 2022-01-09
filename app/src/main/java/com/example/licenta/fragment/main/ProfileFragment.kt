@@ -1,5 +1,6 @@
 package com.example.licenta.fragment.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.licenta.R
+import com.example.licenta.activity.auth.LoginActivity
+import com.example.licenta.data.LoggedUserData
+import com.example.licenta.data.LoggedUserGoals
+import com.example.licenta.firebase.Auth
 import com.example.licenta.fragment.main.profile.ConnectionsFragment
 import com.example.licenta.fragment.main.profile.GoalsFragment
 import com.example.licenta.fragment.main.profile.PostsFragment
@@ -25,10 +30,10 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ProfileFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener {
+class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener, View.OnClickListener {
     private lateinit var fragmentFrameLayout: FrameLayout
     private lateinit var profilePhoto: ImageView
-    private lateinit var settings: ImageView
+    private lateinit var logOut: ImageView
     private lateinit var infoTab: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +45,8 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener {
         infoTab = view.findViewById(R.id.fragment_profile_tab_layout)
         infoTab.addOnTabSelectedListener(this)
         profilePhoto = view.findViewById(R.id.fragment_profile_photo_profile_iv)
-        settings = view.findViewById(R.id.fragment_profile_button_settings_btn)
+        logOut = view.findViewById(R.id.fragment_profile_button_log_out_btn)
+        logOut.setOnClickListener(this)
     }
 
 
@@ -59,6 +65,16 @@ class ProfileFragment : Fragment(), TabLayout.OnTabSelectedListener {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         initComponents(view)
         return view
+    }
+
+    override fun onClick(view: View?) {
+        if(view!!.id == R.id.fragment_profile_button_log_out_btn){
+            Auth.logUserOut()
+            LoggedUserData.setLoggedUser(null)
+            LoggedUserGoals.setGoals(null)
+            startActivity(Intent(context!!,LoginActivity::class.java))
+            activity!!.finish()
+        }
     }
 
     companion object {

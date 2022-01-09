@@ -198,6 +198,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 heightET.text.toString().trim().toInt(),
                 weightET.text.toString().trim().toInt(), passwordET.text.toString().trim()
             )
+            finish()
         }
     }
 

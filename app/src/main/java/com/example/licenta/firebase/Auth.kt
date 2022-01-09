@@ -74,6 +74,10 @@ object Auth {
             }
     }
 
+    fun logUserOut(){
+        auth.signOut()
+    }
+
     fun currentUser(): FirebaseUser? {
         return auth.currentUser
     }
