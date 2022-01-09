@@ -2,17 +2,26 @@ package com.example.licenta.util
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import android.graphics.drawable.Drawable
+
+import android.R
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+
 
 object Util {
     const val MINIMUM_HEIGHT_CM = 54
@@ -60,5 +69,4 @@ object Util {
                 activity.currentFocus?.windowToken, 0
             )
     }
-
 }
