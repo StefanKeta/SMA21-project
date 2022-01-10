@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_main_bottom_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/menu_bottom_main_home"
+        />
+
+    <item
+        android:id="@+id/menu_main_bottom_diary"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_book_24"
+        android:title="@string/menu_main_bottom_diary"
+        />
+
+    <item
+        android:id="@+id/menu_main_bottom_placeholder"
+        android:title=""
+        />
+
+    <item
+        android:id="@+id/menu_main_bottom_location"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_location_on_24"
+        android:title="@string/menu_main_bottom_find_gym"
+        />
+
+
+    <item
+        android:id="@+id/menu_main_bottom_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/menu_main_bottom_profile"
+        />
+
+
+
+</menu>

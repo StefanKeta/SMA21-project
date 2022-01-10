@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/activity_add_custom_exercise_main_ll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.diary.AddCustomExerciseActivity"
+    android:padding="@dimen/app_padding_large"
+    android:gravity="center">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activity_add_custom_exercise_group_til"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginBottom="@dimen/app_margin_medium"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_add_custom_exercise_group_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/activity_add_custom_exercise_name_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="@dimen/app_margin_medium"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_add_custom_exercise_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/activity_add_custom_exercise_cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="Cancel"/>
+
+            <Button
+                android:id="@+id/activity_add_custom_exercise_save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="Add" />
+
+        </RelativeLayout>
+
+</LinearLayout>

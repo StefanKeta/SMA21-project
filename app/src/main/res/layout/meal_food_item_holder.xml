@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/app_padding_small">
+
+    <TextView
+        android:id="@+id/meal_food_item_holder_food_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Chicken breast"
+        android:textSize="@dimen/text_size_list_item_important"
+        android:textStyle="bold"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/meal_food_item_holder_quantity_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="100"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="italic"
+                />
+
+            <TextView
+                android:id="@+id/meal_food_item_holder_weight_unit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="g"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="italic"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/meal_food_item_holder_kcal_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="120"
+                android:textSize="@dimen/text_size_list_item_important"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_food_item_holder_kcal_tv"
+                android:textSize="@dimen/text_size_list_item_important"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "914124891433",
+    "project_id": "licenta-bb97e",
+    "storage_bucket": "licenta-bb97e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914124891433:android:98f1b2204fe14528474338",
+        "android_client_info": {
+          "package_name": "com.example.licenta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914124891433-krpo7i38nrdoo44pq7jgnuc1qlra04if.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh6vHZJlplebVbnxlj-kDgDG5p8Epo7ZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914124891433-krpo7i38nrdoo44pq7jgnuc1qlra04if.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
