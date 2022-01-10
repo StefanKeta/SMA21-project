@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="5"
+    android:paddingVertical="@dimen/app_horizontal_padding_standard"
+    android:paddingHorizontal="@dimen/app_padding_small"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/add_food_view_holder_food_name_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        tools:text="Chicken breast"
+        android:textSize="@dimen/text_size_list_item_important"
+        android:textStyle="bold"
+        />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/add_food_view_holder_food_kcal_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_list_item_important"
+            tools:text="350"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_list_item_important"
+            android:text="@string/menu_food_item_holder_kcal_tv"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
