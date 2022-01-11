@@ -110,6 +110,7 @@ class SetGoalsActivity : AppCompatActivity(), View.OnClickListener {
         if (addedSuccessfully) {
             startActivity(Intent(this@SetGoalsActivity, MainActivity::class.java))
             LoggedUserGoals.setGoals(goals!!)
+            finish()
         } else
             Toast
                 .makeText(
