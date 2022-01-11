@@ -45,7 +45,7 @@ import java.math.RoundingMode
 class MapsFragment : Fragment(), PlaceSelectionListener, GoogleMap.OnCameraIdleListener,
     View.OnClickListener {
 
-    private lateinit var locationRequestLauncher : ActivityResultLauncher<Array<String>?>
+    private lateinit var locationRequestLauncher: ActivityResultLauncher<Array<String>?>
     private lateinit var mapView: View
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -129,8 +129,8 @@ class MapsFragment : Fragment(), PlaceSelectionListener, GoogleMap.OnCameraIdleL
 
     override fun onCameraIdle() {
         val phoneLocation = LatLng(
-            BigDecimal(lastKnownLocation!!.latitude).setScale(4,RoundingMode.HALF_EVEN).toDouble(),
-            BigDecimal(lastKnownLocation!!.longitude).setScale(4,RoundingMode.HALF_EVEN).toDouble()
+            BigDecimal(lastKnownLocation!!.latitude).setScale(4, RoundingMode.HALF_EVEN).toDouble(),
+            BigDecimal(lastKnownLocation!!.longitude).setScale(4, RoundingMode.HALF_EVEN).toDouble()
         )
         val centeredLocation = LatLng(
             BigDecimal(map.cameraPosition.target.latitude).setScale(
@@ -141,8 +141,6 @@ class MapsFragment : Fragment(), PlaceSelectionListener, GoogleMap.OnCameraIdleL
                 .toDouble()
         )
 
-
-        Log.d("setupPlaces", "onCameraIdle: ${map.cameraPosition.target} $phoneLocation}")
         if (centeredLocation != phoneLocation) {
             movedCameraLocation = centeredLocation
             searchAreaBtn.visibility = View.VISIBLE
