@@ -70,9 +70,13 @@ class FoodFragment(private var date: String = Date.setCurrentDay()) : Fragment()
         setUpProgressBars(view)
         setUpRecyclerView(view)
         addFoodForUserContract = registerForActivityResult(AddedFoodForUserContract()) { isSaved ->
-            if (isSaved)
+            if (isSaved) {
                 foodAdapter.notifyDataSetChanged()
-            else {
+                SelectedFoodDB.getSelectedFoodByDateAndId(
+                    date,
+                    ::updateMacrosAndCalories
+                )
+            } else {
                 Toast.makeText(context, "Could not add to foods!", Toast.LENGTH_SHORT)
                     .show()
             }
